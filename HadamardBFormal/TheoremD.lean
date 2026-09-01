@@ -36,8 +36,8 @@ as a statement about four integers, leaving the matrix argument as bookkeeping.
 
 **Scope.**  This file proves the genuine branch; (D-a′), the collapse of the degenerate
 branch `M = 4J₂`, is `Degenerate.lean`, which starts from this file's
-`theoremD_tables_degenerate`.  The `768²` census of (D-e) is labelled MEASURED in the
-note and is not a theorem.  `theoremD_transport` and the §1.6 collapse corollary are
+`theoremD_tables_degenerate`.  The `768²` census of (D-e) is labelled
+PROVEN-BY-CERTIFICATE in the note (its cert 10) and is not a theorem here.  `theoremD_transport` and the §1.6 collapse corollary are
 `Collapse.lean`.
 -/
 
