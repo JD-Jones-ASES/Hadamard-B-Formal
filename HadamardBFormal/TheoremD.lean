@@ -229,24 +229,24 @@ theorem deltaSqSum_eq_four {G : Type*} [Fintype G] [AddCommGroup G]
 
 /-! ### (D-a) and (D-b): the column table -/
 
-/-- **Theorem D, clauses (D-a) and (D-b)** (`NOTE-B` §1.5).
+/-- **The Gram contraction at `(s, i) = (1, 2)`** (`NOTE-B` §1.5, the engine of (D-a)).
 
-At `(s, i) = (1, 2)` the Gram table is forced: `M(0) = 4` by the ansatz and
-`M(1) = ±4`.  In the genuine branch `M(1) = −4` the column table pair-negates,
-`Q[(I,1)] = −Q[(I,0)]`, and the reduced table `U[I] = Q[(I,0)]` is a `4×4`
-Hadamard matrix.
+The Gram table is forced: `M(0) = 4` by the ansatz and `M(1) = ±4`; the reduced table
+`U[I] = Q[(I,0)]` is a `4×4` Hadamard matrix; and the second row class is pinned to the
+first by the **contraction** `4·Q[(I,1)] = M(1)·U[I]`.  Both branches of (D-a) read off
+that one identity — `M(1) = −4` gives pair-negation (D-b), `M(1) = +4` gives
+pair-equality (D-a′).
 
 The note argues this through rank and positive semidefiniteness over `ℝ`; the proof
 here is an integer one.  `U Uᵀ = 4·1` upgrades to `Matrix.IsHadamard U` by
 `Matrix.IsHadamard.of_mul_conjTranspose`, whose `conjTranspose_mul` field returns
-`Uᵀ U = 4·1` for free; contracting `Q[(I,1)]` against that gives
-`4·Q[(I,1)] = M(1)·U[I]`, and dotting with `Q[(I,1)]` gives `M(1)² = 16`. -/
-theorem theoremD_tables (Q : Matrix (Fin 4 × ZMod 2) (Fin 4) ℤ) (hQ : ∀ z c, IsSign (Q z c))
-    (M : ZMod 2 → ℤ) (h1 : H1 (s := 1) Q M) :
+`Uᵀ U = 4·1` for free; contracting `Q[(I,1)]` against that gives the contraction, and
+dotting it with `Q[(I,1)]` gives `M(1)² = 16`. -/
+theorem theoremD_gramContraction (Q : Matrix (Fin 4 × ZMod 2) (Fin 4) ℤ)
+    (hQ : ∀ z c, IsSign (Q z c)) (M : ZMod 2 → ℤ) (h1 : H1 (s := 1) Q M) :
     M 0 = 4 ∧ (M 1 = 4 ∨ M 1 = -4) ∧
-      (M 1 = -4 →
-        (∀ I : Fin 4, Q (I, 1) = -Q (I, 0)) ∧
-          Matrix.IsHadamard (Matrix.of fun I c : Fin 4 => Q (I, 0) c)) := by
+      Matrix.IsHadamard (Matrix.of fun I c : Fin 4 => Q (I, 0) c) ∧
+      ∀ I c : Fin 4, 4 * Q (I, 1) c = Q (I, 0) c * M 1 := by
   have hM0 : M 0 = 4 := by
     have h := M_zero_of_H1 hQ h1
     norm_num at h
@@ -342,11 +342,42 @@ theorem theoremD_tables (Q : Matrix (Fin 4 × ZMod 2) (Fin 4) ℤ) (hQ : ∀ z c
     rcases mul_eq_zero.mp h with h' | h'
     · left; linarith
     · right; linarith
+  exact ⟨hM0, hM1, hUhad, key⟩
+
+/-- **Theorem D, clauses (D-a) and (D-b)** (`NOTE-B` §1.5).
+
+At `(s, i) = (1, 2)` the Gram table is forced: `M(0) = 4` by the ansatz and
+`M(1) = ±4`.  In the genuine branch `M(1) = −4` the column table pair-negates,
+`Q[(I,1)] = −Q[(I,0)]`, and the reduced table `U[I] = Q[(I,0)]` is a `4×4`
+Hadamard matrix.  This is `theoremD_gramContraction` read at `M(1) = −4`. -/
+theorem theoremD_tables (Q : Matrix (Fin 4 × ZMod 2) (Fin 4) ℤ) (hQ : ∀ z c, IsSign (Q z c))
+    (M : ZMod 2 → ℤ) (h1 : H1 (s := 1) Q M) :
+    M 0 = 4 ∧ (M 1 = 4 ∨ M 1 = -4) ∧
+      (M 1 = -4 →
+        (∀ I : Fin 4, Q (I, 1) = -Q (I, 0)) ∧
+          Matrix.IsHadamard (Matrix.of fun I c : Fin 4 => Q (I, 0) c)) := by
+  obtain ⟨hM0, hM1, hUhad, key⟩ := theoremD_gramContraction Q hQ M h1
   refine ⟨hM0, hM1, fun hneg => ⟨fun I => ?_, hUhad⟩⟩
   funext c
   have h := key I c
   rw [hneg] at h
   change Q (I, (1 : ZMod 2)) c = -Q (I, (0 : ZMod 2)) c
+  linarith
+
+/-- **Theorem D, clause (D-a′), first item** (`NOTE-B` §1.5).  In the degenerate branch
+`M(1) = +4` the same contraction forces the column table to pair up **equal**,
+`Q[(I,1)] = Q[(I,0)]`, and `U[I] = Q[(I,0)]` is again a `4×4` Hadamard matrix.  This is
+(D-b) with the sign reversed: `+4` forces equality where `−4` forces negation. -/
+theorem theoremD_tables_degenerate (Q : Matrix (Fin 4 × ZMod 2) (Fin 4) ℤ)
+    (hQ : ∀ z c, IsSign (Q z c)) (M : ZMod 2 → ℤ) (h1 : H1 (s := 1) Q M) (hpos : M 1 = 4) :
+    (∀ I : Fin 4, Q (I, 1) = Q (I, 0)) ∧
+      Matrix.IsHadamard (Matrix.of fun I c : Fin 4 => Q (I, 0) c) := by
+  obtain ⟨-, -, hUhad, key⟩ := theoremD_gramContraction Q hQ M h1
+  refine ⟨fun I => ?_, hUhad⟩
+  funext c
+  have h := key I c
+  rw [hpos] at h
+  change Q (I, (1 : ZMod 2)) c = Q (I, (0 : ZMod 2)) c
   linarith
 
 /-! ### Evaluating a functional on the Goethals--Seidel table
@@ -691,7 +722,7 @@ theorem theoremD_rowTable {G : Type*} [Fintype G] [AddCommGroup G] {w : ℕ}
     exact Finset.sum_congr rfl fun J _ => (hCJ J).symm
   -- `D5` at the house profile: `Σ_q r_q² = N`.
   have hN : (∑ q, rvec x q * rvec x q) = 4 * ((Fintype.card G : ℤ) + 1) := by
-    have hd5 := D5 κ hw x hx h2
+    have hd5 := D5 κ (hw 0) x hx h2
     have hcvt : (∑ q, rvec x q * rvec x q) = ∑ q, (∑ g, x q g) ^ 2 :=
       Finset.sum_congr rfl fun q _ => by simp only [rvec]; ring
     rw [hcvt, hd5, hn]

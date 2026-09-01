@@ -372,11 +372,12 @@ gives the second moment of the row sums:
 Σ_q r_q² = 4n − 4s(w−1) + 4(n−w) = 8n − 4w(s+1) + 4s.
 ```
 
-Only the fiber over `0` — i.e. `|K| = w` — enters; neither surjectivity of `κ`
-nor the index is used. -/
+Only the fiber over `0` — i.e. `|K| = w` — enters, and the hypothesis says
+exactly that: neither surjectivity of `κ`, nor the index, nor the size of any
+other fiber is used. -/
 theorem D5 {G Gbar : Type*} [Fintype G] [AddCommGroup G]
     [AddCommGroup Gbar] [DecidableEq Gbar] {s w : ℕ} (κ : G →+ Gbar)
-    (hw : ∀ c : Gbar, (Finset.univ.filter fun g : G => κ g = c).card = w)
+    (hker : (Finset.univ.filter fun g : G => κ g = 0).card = w)
     (x : Fin 4 → G → ℤ) (hx : ∀ q g, IsSign (x q g)) (h2 : H2 x κ (houseM s)) :
     (∑ q, (∑ g, x q g) ^ 2)
       = 8 * (Fintype.card G : ℤ) - 4 * (w : ℤ) * ((s : ℤ) + 1) + 4 * (s : ℤ) := by

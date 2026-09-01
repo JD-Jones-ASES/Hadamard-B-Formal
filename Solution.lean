@@ -211,11 +211,11 @@ theorem borderedGS_index_one {G Gbar : Type*} [AddCommGroup G] [Fintype G] [Deci
 
 theorem D5 {G Gbar : Type*} [Fintype G] [AddCommGroup G]
     [AddCommGroup Gbar] [DecidableEq Gbar] {s w : ℕ} (κ : G →+ Gbar)
-    (hw : ∀ c : Gbar, (Finset.univ.filter fun g : G => κ g = c).card = w)
+    (hker : (Finset.univ.filter fun g : G => κ g = 0).card = w)
     (x : Fin 4 → G → ℤ) (hx : ∀ q g, IsSign (x q g)) (h2 : H2 x κ (houseM s)) :
     (∑ q, (∑ g, x q g) ^ 2)
       = 8 * (Fintype.card G : ℤ) - 4 * (w : ℤ) * ((s : ℤ) + 1) + 4 * (s : ℤ) :=
-  HadamardBFormalCore.D5 κ hw x hx h2
+  HadamardBFormalCore.D5 κ hker x hx h2
 
 theorem D6 {G Gbar : Type*} [Fintype G] [AddCommGroup G]
     [AddCommGroup Gbar] [DecidableEq Gbar] [Subsingleton Gbar] {s : ℕ} (κ : G →+ Gbar)

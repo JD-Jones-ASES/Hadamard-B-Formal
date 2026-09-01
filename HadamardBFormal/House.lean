@@ -316,16 +316,16 @@ the second moment of the row sums:
 Σ_q r_q² = 4n − 4s(w−1) + 4(n−w) = 8n − 4w(s+1) + 4s.
 ```
 
-Only the fiber over `0` — i.e. `|K| = w` — enters; neither surjectivity of `κ`
-nor the index is used. -/
+Only the fiber over `0` — i.e. `|K| = w` — enters, and the hypothesis says
+exactly that: neither surjectivity of `κ`, nor the index, nor the size of any
+other fiber is used. -/
 theorem D5 {G Gbar : Type*} [Fintype G] [AddCommGroup G]
     [AddCommGroup Gbar] [DecidableEq Gbar] {s w : ℕ} (κ : G →+ Gbar)
-    (hw : ∀ c : Gbar, (Finset.univ.filter fun g : G => κ g = c).card = w)
+    (hker : (Finset.univ.filter fun g : G => κ g = 0).card = w)
     (x : Fin 4 → G → ℤ) (hx : ∀ q g, IsSign (x q g)) (h2 : H2 x κ (houseM s)) :
     (∑ q, (∑ g, x q g) ^ 2)
       = 8 * (Fintype.card G : ℤ) - 4 * (w : ℤ) * ((s : ℤ) + 1) + 4 * (s : ℤ) := by
   classical
-  have hker : (Finset.univ.filter fun g : G => κ g = 0).card = w := hw 0
   -- The profile, written so that the three tiers are three indicator functions.
   have hdecomp : ∀ t : G, sumPaf x t
       = 4 * (if κ t = 0 then (0 : ℤ) else 1)
@@ -380,7 +380,7 @@ theorem D6 {G Gbar : Type*} [Fintype G] [AddCommGroup G]
     rw [Finset.filter_true_of_mem fun g _ => Subsingleton.elim (κ g) c, Finset.card_univ]
   have hnn : (0 : ℤ) ≤ ∑ q, (∑ g, x q g) ^ 2 :=
     Finset.sum_nonneg fun q _ => sq_nonneg _
-  rw [D5 κ hw x hx h2] at hnn
+  rw [D5 κ (hw 0) x hx h2] at hnn
   -- The only nonlinear term is `n·s`; naming it makes the rest linear.
   obtain ⟨A, hA⟩ : ∃ A : ℤ, (Fintype.card G : ℤ) * (s : ℤ) = A := ⟨_, rfl⟩
   have hlin : 8 * (Fintype.card G : ℤ) - 4 * (Fintype.card G : ℤ) * ((s : ℤ) + 1) + 4 * (s : ℤ)
