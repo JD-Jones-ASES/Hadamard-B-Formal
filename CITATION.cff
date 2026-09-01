@@ -36,8 +36,7 @@ abstract: >-
   review; see DISCLOSURE.md. The authors field below records the repository
   owner and responsible publisher, not a mathematical contributor; the
   AI/human division of labour is DISCLOSURE.md. The licence below is the
-  licence of the whole snapshot; the prose documents are additionally offered
-  under CC BY-SA 4.0 as a secondary grant, described in LICENSE-DOCS.md.
+  licence of the whole snapshot.
 type: software
 version: 0.1.0
 url: "https://github.com/JD-Jones-ASES/Hadamard-B-Formal"

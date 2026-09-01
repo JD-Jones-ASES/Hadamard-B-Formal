@@ -166,8 +166,6 @@ so the exact claim can be identified and assessed without reaching the source.
 
 ## License
 
-The entire snapshot at the pinned commit is licensed under the MIT License; see
-`LICENSE`. The prose documents are **additionally** offered under CC BY-SA 4.0,
-as a secondary grant on top of that MIT licence rather than a carve-out from it;
-see `LICENSE-DOCS.md`. No licence is claimed over the mathematical facts the
-instance data encodes.
+The entire snapshot at the pinned commit — Lean sources, scripts, metadata
+and prose alike — is licensed under the MIT License; see `LICENSE`. No
+licence is claimed over the mathematical facts the instance data encodes.
