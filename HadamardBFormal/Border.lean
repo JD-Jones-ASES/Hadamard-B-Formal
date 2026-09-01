@@ -19,7 +19,17 @@ H = [ E   P̃ ]      P̃[r, (J,h)] = P[r][(J, κ h)]
     [ Q̃   C ]      Q̃[(I,g), c] = Q[(I, κ g)][c]
 ```
 
-Only the definitions live in this file; Theorem A is a later stage.
+Besides the definitions the file carries the **mechanics** that every use of the
+ansatz shares:
+
+* `fromBlocks_eq_smul_one_iff` and `border_gram_iff` — the reduction of
+  `H Hᵀ = N · I` to the four block equations displayed in `NOTE-B` §1.1;
+* `rowStrip_mul_transpose` — `P̃ P̃ᵀ = w · P Pᵀ`, the top-left computation, for any
+  quotient map whose fibers all have size `w`;
+* `colStrip_mul_transpose_apply` — `(Q̃ Q̃ᵀ)[(I,g),(I',g')] = (Q Qᵀ)[(I,κg),(I',κg')]`;
+* `border_isSign`.
+
+Theorem A itself is a later stage.
 -/
 
 namespace HadamardBFormal
@@ -87,5 +97,115 @@ def H4 {s : ℕ} [Fintype Gbar] [DecidableEq Gbar]
     (Q : Matrix (Fin 4 × Gbar) (Fin (4 * s)) ℤ)
     (Chat : Matrix (Fin 4 × Gbar) (Fin 4 × Gbar) ℤ) : Prop :=
   E * Q.transpose + P * Chat.transpose = 0
+
+/-! ### The four-block reduction of `H Hᵀ = N · I`
+
+`NOTE-B` §1.1 displays `H Hᵀ` as a two-by-two array of blocks and reads off four
+equations.  These two lemmas are that display, and they are what every stage of
+the development consumes. -/
+
+/-- A block matrix is a scalar multiple of the identity exactly when its diagonal
+blocks are and its off-diagonal blocks vanish. -/
+theorem fromBlocks_eq_smul_one_iff {m n : Type*} [DecidableEq m] [DecidableEq n]
+    (A : Matrix m m ℤ) (B : Matrix m n ℤ) (C : Matrix n m ℤ) (D : Matrix n n ℤ) (N : ℤ) :
+    Matrix.fromBlocks A B C D = N • (1 : Matrix (m ⊕ n) (m ⊕ n) ℤ) ↔
+      A = N • 1 ∧ B = 0 ∧ C = 0 ∧ D = N • 1 := by
+  rw [show (N • (1 : Matrix (m ⊕ n) (m ⊕ n) ℤ)) = Matrix.fromBlocks (N • 1) 0 0 (N • 1) by
+      rw [← Matrix.fromBlocks_one (l := m) (m := n), Matrix.fromBlocks_smul, smul_zero,
+        smul_zero],
+    Matrix.fromBlocks_inj]
+
+/-- The Gram of the bordered array, in block form.  This is the display
+
+```
+H Hᵀ = [ E Eᵀ + P̃ P̃ᵀ      E Q̃ᵀ + P̃ Cᵀ ]
+       [ Q̃ Eᵀ + C P̃ᵀ      Q̃ Q̃ᵀ + C Cᵀ ]
+```
+-/
+theorem border_mul_transpose [AddCommGroup G] [Fintype G] [AddCommGroup Gbar]
+    {s : ℕ} (κ : G →+ Gbar)
+    (E : Matrix (Fin (4 * s)) (Fin (4 * s)) ℤ)
+    (P : Matrix (Fin (4 * s)) (Fin 4 × Gbar) ℤ)
+    (Q : Matrix (Fin 4 × Gbar) (Fin (4 * s)) ℤ)
+    (x : Fin 4 → G → ℤ) (ρ : G) :
+    border κ E P Q x ρ * (border κ E P Q x ρ).transpose =
+      Matrix.fromBlocks
+        (E * E.transpose + rowStrip κ P * (rowStrip κ P).transpose)
+        (E * (colStrip κ Q).transpose + rowStrip κ P * (core x ρ).transpose)
+        (colStrip κ Q * E.transpose + core x ρ * (rowStrip κ P).transpose)
+        (colStrip κ Q * (colStrip κ Q).transpose + core x ρ * (core x ρ).transpose) := by
+  rw [border, Matrix.fromBlocks_transpose, Matrix.fromBlocks_multiply]
+
+/-- **The four block equations of `NOTE-B` §1.1.**  The bordered array has Gram
+`N · I` exactly when the top-left block is `N · I`, the top-right and bottom-left
+blocks vanish, and the bottom-right block is `N · I`. -/
+theorem border_gram_iff [AddCommGroup G] [Fintype G] [DecidableEq G] [AddCommGroup Gbar]
+    {s : ℕ} (κ : G →+ Gbar)
+    (E : Matrix (Fin (4 * s)) (Fin (4 * s)) ℤ)
+    (P : Matrix (Fin (4 * s)) (Fin 4 × Gbar) ℤ)
+    (Q : Matrix (Fin 4 × Gbar) (Fin (4 * s)) ℤ)
+    (x : Fin 4 → G → ℤ) (ρ : G) (N : ℤ) :
+    border κ E P Q x ρ * (border κ E P Q x ρ).transpose = N • 1 ↔
+      (E * E.transpose + rowStrip κ P * (rowStrip κ P).transpose = N • 1) ∧
+        (E * (colStrip κ Q).transpose + rowStrip κ P * (core x ρ).transpose = 0) ∧
+        (colStrip κ Q * E.transpose + core x ρ * (rowStrip κ P).transpose = 0) ∧
+        (colStrip κ Q * (colStrip κ Q).transpose
+          + core x ρ * (core x ρ).transpose = N • 1) := by
+  rw [border_mul_transpose, fromBlocks_eq_smul_one_iff]
+
+/-! ### The two strips -/
+
+/-- Summing a function of the quotient over the group multiplies it by the common
+fiber size.  This is the only aggregation device the development uses. -/
+theorem sum_comp_of_card_fiber_eq [Fintype G] [Fintype Gbar] [DecidableEq Gbar] {w : ℕ}
+    (κ : G → Gbar)
+    (hw : ∀ c : Gbar, (Finset.univ.filter fun g : G => κ g = c).card = w) (F : Gbar → ℤ) :
+    (∑ g : G, F (κ g)) = (w : ℤ) * ∑ c, F c := by
+  rw [← Finset.sum_fiberwise' Finset.univ κ F, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun c _ => ?_
+  rw [Finset.sum_const, hw c, nsmul_eq_mul]
+
+/-- **The top-left computation.**  Each class `(J,c)` has exactly `w` members, so
+`P̃ P̃ᵀ = w · P Pᵀ`. -/
+theorem rowStrip_mul_transpose [Fintype G] [Fintype Gbar] [DecidableEq Gbar] {s w : ℕ}
+    (κ : G → Gbar)
+    (hw : ∀ c : Gbar, (Finset.univ.filter fun g : G => κ g = c).card = w)
+    (P : Matrix (Fin (4 * s)) (Fin 4 × Gbar) ℤ) :
+    rowStrip κ P * (rowStrip κ P).transpose = (w : ℤ) • (P * P.transpose) := by
+  ext r r'
+  simp only [Matrix.mul_apply, Matrix.transpose_apply, rowStrip_apply, Matrix.smul_apply,
+    smul_eq_mul, Fintype.sum_prod_type]
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl fun J _ => ?_
+  exact sum_comp_of_card_fiber_eq κ hw fun c => P r (J, c) * P r' (J, c)
+
+/-- **The bottom-right computation, first half.**  The column strip repeats the
+rows of `Q` along the fibers, so its Gram is `Q Qᵀ` read at the images. -/
+theorem colStrip_mul_transpose_apply {s : ℕ} (κ : G → Gbar)
+    (Q : Matrix (Fin 4 × Gbar) (Fin (4 * s)) ℤ) (z z' : Fin 4 × G) :
+    (colStrip κ Q * (colStrip κ Q).transpose) z z' =
+      (Q * Q.transpose) (z.1, κ z.2) (z'.1, κ z'.2) :=
+  rfl
+
+/-! ### Signs -/
+
+/-- The bordered array of sign-valued data is sign valued. -/
+theorem border_isSign [AddCommGroup G] [AddCommGroup Gbar] {s : ℕ} (κ : G →+ Gbar)
+    (E : Matrix (Fin (4 * s)) (Fin (4 * s)) ℤ)
+    (P : Matrix (Fin (4 * s)) (Fin 4 × Gbar) ℤ)
+    (Q : Matrix (Fin 4 × Gbar) (Fin (4 * s)) ℤ)
+    (x : Fin 4 → G → ℤ) (ρ : G)
+    (hE : ∀ r c, IsSign (E r c)) (hP : ∀ r z, IsSign (P r z))
+    (hQ : ∀ z c, IsSign (Q z c)) (hx : ∀ q g, IsSign (x q g))
+    (i j : Fin (4 * s) ⊕ (Fin 4 × G)) : IsSign (border κ E P Q x ρ i j) := by
+  cases i with
+  | inl r =>
+    cases j with
+    | inl c => exact hE r c
+    | inr z => exact hP r _
+  | inr z =>
+    cases j with
+    | inl c => exact hQ _ c
+    | inr y => exact core_isSign x ρ hx z y
 
 end HadamardBFormal
