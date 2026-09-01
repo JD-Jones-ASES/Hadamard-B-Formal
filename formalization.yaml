@@ -46,7 +46,7 @@ sources:
   - title: "Hadamard-B: bordered Goethals-Seidel arrays - characterisation, classification, and three equivalence classes at order 668"
     authors:
       - "JD Jones"
-    id: "https://github.com/JD-Jones-ASES/Hadamard-B/tree/d460202cbc1f30e3a48c28fad916cac00d87cf30"
+    id: "https://github.com/JD-Jones-ASES/Hadamard-B/tree/35665af5bc97bf3811bf971e39051727fcc99d10"
     type: "other"
     location: >-
       note/NOTE-B.md sections 1.0-1.6 and 2.2; data/h52-gate.json (SHA-256

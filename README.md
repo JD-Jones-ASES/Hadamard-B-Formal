@@ -79,7 +79,7 @@ For the submission form's optional `context` field, which is published:
    leakage, and licence consistency.
 3. **The source repository must be publicly cloneable at its pinned SHA before
    submission**: JD flips [Hadamard-B](https://github.com/JD-Jones-ASES/Hadamard-B)
-   public at `d460202c…`, so the cited note is inspectable. The account here is
+   public at `35665af5…`, so the cited note is inspectable. The account here is
    written to stand without it either way.
 4. JD flips this repository public at the exact final commit. Palomar checks out
    that commit, and mechanical verification runs in a public GitHub Actions
@@ -272,7 +272,7 @@ records from a Hadamard-B checkout. Before parsing, it requires their bytes to
 match the SHA-256 pins below; it then validates the record fields it depends on
 and emits `HadamardBFormal/Data/Generated.lean` deterministically.
 
-| Source at `Hadamard-B@d460202cbc1f30e3a48c28fad916cac00d87cf30` | SHA-256 |
+| Source at `Hadamard-B@35665af5bc97bf3811bf971e39051727fcc99d10` | SHA-256 |
 | --- | --- |
 | `data/h52-gate.json` | `ef60c4ff9f245eec5ba7f035e5968152836207fcd9235a0b1851150d2fb1d170` |
 | `data/h20-boundary.json` | `716610543b79ab9e1c9f1adb142c114544e70e58d370500130b83c17a18cf254` |
@@ -326,7 +326,7 @@ repeats those statements and connects them to the completed development under
 
 ## Sources and provenance
 
-- `Hadamard-B@d460202cbc1f30e3a48c28fad916cac00d87cf30`, `note/NOTE-B.md`
+- `Hadamard-B@35665af5bc97bf3811bf971e39051727fcc99d10`, `note/NOTE-B.md`
   §§1.0--1.6 and §2.2, is the source for every statement formalized here and
   for the two pinned instance records. **That repository is private at the time
   of writing** and is expected to be public at registration. A reader who
