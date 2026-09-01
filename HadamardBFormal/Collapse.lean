@@ -28,6 +28,11 @@ import HadamardBFormal.TheoremD
   `δ_q(ψ x) = r_q(x)`: see `dvec_seedTwist_of_eps_one` and the corollary
   `theoremD_transport_eps_one`.
 
+* `theoremD_transport_converse` — the other half of **(D-e)**: `d = r` is *forced*.
+  The transported border equation reads `P₁Λ(d)ᵀQ₁ = P₁Λ(r)ᵀQ₁`, and cancelling the
+  two `4 × 4` Hadamard factors — over `ℤ`, not over `ℚ` — gives `Λ(d) = Λ(r)`.
+  `theoremD_transport_iff` packages the two halves as the note's *exactly when*.
+
 * `collapse_seedProblem_bijection` — the seed-problem bijection clause of
   §1.6's Corollary.  The twist `x ↦ ψ x` is an
   involution of sign-valued quadruples carrying the `i = 1` seed problem

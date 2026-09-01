@@ -145,6 +145,14 @@ def doubleRow (P : Matrix (Fin 4) (Fin 4) ℤ) : Matrix (Fin (4 * 1)) (Fin 4 × 
 def doubleCol (Q : Matrix (Fin 4) (Fin 4) ℤ) : Matrix (Fin 4 × ZMod 2) (Fin (4 * 1)) ℤ :=
   fun z c => if z.2 = 0 then Q z.1 c else -Q z.1 c
 
+def collapseRow {Gbar' : Type*} (P : Matrix (Fin (4 * 1)) (Fin 4 × ZMod 2) ℤ) :
+    Matrix (Fin (4 * 1)) (Fin 4 × Gbar') ℤ :=
+  fun r z => P r (z.1, 0)
+
+def collapseCol {Gbar' : Type*} (Q : Matrix (Fin 4 × ZMod 2) (Fin (4 * 1)) ℤ) :
+    Matrix (Fin 4 × Gbar') (Fin (4 * 1)) ℤ :=
+  fun z c => Q (z.1, 0) c
+
 theorem theoremA_sufficiency {G Gbar : Type*} [AddCommGroup G] [Fintype G] [DecidableEq G]
     [AddCommGroup Gbar] [Fintype Gbar] [DecidableEq Gbar] {s w : ℕ} (κ : G →+ Gbar)
     (hw : ∀ c : Gbar, (Finset.univ.filter fun g : G => κ g = c).card = w)
@@ -318,6 +326,75 @@ theorem theoremD_transport {G : Type*} [Fintype G] [AddCommGroup G] [DecidableEq
     Matrix.IsHadamard (border κ E₁ (doubleRow P₁) (doubleCol Q₁) (seedTwist κ x) ρ) :=
   HadamardBFormalCore.theoremD_transport κ hw E₁ P₁ Q₁ x ρ hE hP hQ hx hQgram hprofile h3 h4 hd
 
+theorem theoremD_transport_converse {G : Type*} [Fintype G] [AddCommGroup G]
+    (κ : G →+ ZMod 2)
+    (E₁ : Matrix (Fin (4 * 1)) (Fin (4 * 1)) ℤ) (P₁ Q₁ : Matrix (Fin 4) (Fin 4) ℤ)
+    (x : Fin 4 → G → ℤ) (ρ : G)
+    (hP : ∀ r J, IsSign (P₁ r J)) (hQ : ∀ I c, IsSign (Q₁ I c))
+    (hPgram : P₁ * P₁.transpose = (4 : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ))
+    (hQgram : Q₁ * Q₁.transpose = (4 : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ))
+    (h4 : E₁ * Q₁.transpose + P₁ * (Lam (rvec x)).transpose = 0)
+    (h4' : H4 (s := 1) E₁ (doubleRow P₁) (doubleCol Q₁) (chat κ (seedTwist κ x) ρ)) :
+    dvec κ (seedTwist κ x) ρ = rvec x :=
+  HadamardBFormalCore.theoremD_transport_converse κ E₁ P₁ Q₁ x ρ hP hQ hPgram hQgram h4 h4'
+
+theorem theoremD_transport_iff {G : Type*} [Fintype G] [AddCommGroup G] [DecidableEq G]
+    {w : ℕ} (κ : G →+ ZMod 2)
+    (hw : ∀ c : ZMod 2, (Finset.univ.filter fun g : G => κ g = c).card = w)
+    (E₁ : Matrix (Fin (4 * 1)) (Fin (4 * 1)) ℤ) (P₁ Q₁ : Matrix (Fin 4) (Fin 4) ℤ)
+    (x : Fin 4 → G → ℤ) (ρ : G)
+    (hE : ∀ r c, IsSign (E₁ r c)) (hP : ∀ r J, IsSign (P₁ r J)) (hQ : ∀ I c, IsSign (Q₁ I c))
+    (hx : ∀ q g, IsSign (x q g))
+    (hPgram : P₁ * P₁.transpose = (4 : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ))
+    (hQgram : Q₁ * Q₁.transpose = (4 : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ))
+    (hprofile : ∀ t : G, t ≠ 0 → sumPaf x t = -4)
+    (h3 : E₁ * E₁.transpose + (Fintype.card G : ℤ) • (P₁ * P₁.transpose)
+      = (4 * ((Fintype.card G : ℤ) + 1)) • 1)
+    (h4 : E₁ * Q₁.transpose + P₁ * (Lam (rvec x)).transpose = 0) :
+    Matrix.IsHadamard (border κ E₁ (doubleRow P₁) (doubleCol Q₁) (seedTwist κ x) ρ) ↔
+      dvec κ (seedTwist κ x) ρ = rvec x :=
+  HadamardBFormalCore.theoremD_transport_iff κ hw E₁ P₁ Q₁ x ρ hE hP hQ hx hPgram hQgram
+    hprofile h3 h4
+
+theorem theoremD_degenerate_collapse {G Gbar' : Type*} [Fintype G] [AddCommGroup G]
+    [AddCommGroup Gbar'] [Fintype Gbar'] [DecidableEq Gbar'] [Subsingleton Gbar'] {w : ℕ}
+    (κ : G →+ ZMod 2) (κ₀ : G →+ Gbar')
+    (hw : ∀ c : ZMod 2, (Finset.univ.filter fun g : G => κ g = c).card = w)
+    (E : Matrix (Fin (4 * 1)) (Fin (4 * 1)) ℤ) (P : Matrix (Fin (4 * 1)) (Fin 4 × ZMod 2) ℤ)
+    (Q : Matrix (Fin 4 × ZMod 2) (Fin (4 * 1)) ℤ) (x : Fin 4 → G → ℤ) (ρ : G)
+    (hQ : ∀ z c, IsSign (Q z c)) (hx : ∀ q g, IsSign (x q g))
+    (M : ZMod 2 → ℤ) (hM1 : M 1 = 4) (h1 : H1 (s := 1) Q M) (h2 : H2 x κ M)
+    (h3 : H3 (s := 1) E P (w : ℤ) (4 * ((Fintype.card G : ℤ) + 1)))
+    (h4 : H4 (s := 1) E P Q (chat κ x ρ)) :
+    (∀ I : Fin 4, Q (I, 1) = Q (I, 0)) ∧
+      (∀ r J : Fin 4, P r (J, 1) = P r (J, 0)) ∧
+      border κ E P Q x ρ = border κ₀ E (collapseRow P) (collapseCol Q) x ρ ∧
+      H1 (s := 1) (collapseCol (Gbar' := Gbar') Q) (fun _ : Gbar' => 4) ∧
+      H2 x κ₀ (fun _ : Gbar' => 4) ∧
+      H3 (s := 1) E (collapseRow (Gbar' := Gbar') P) (Fintype.card G : ℤ)
+        (4 * ((Fintype.card G : ℤ) + 1)) ∧
+      H4 (s := 1) E (collapseRow (Gbar' := Gbar') P) (collapseCol Q) (chat κ₀ x ρ) :=
+  HadamardBFormalCore.theoremD_degenerate_collapse κ κ₀ hw E P Q x ρ hQ hx M hM1 h1 h2 h3 h4
+
+theorem theoremD_degenerate_converse {G Gbar' : Type*} [Fintype G] [AddCommGroup G]
+    [AddCommGroup Gbar'] [Fintype Gbar'] [DecidableEq Gbar'] [Subsingleton Gbar'] {w : ℕ}
+    (κ : G →+ ZMod 2) (κ₀ : G →+ Gbar')
+    (hw : ∀ c : ZMod 2, (Finset.univ.filter fun g : G => κ g = c).card = w)
+    (E : Matrix (Fin (4 * 1)) (Fin (4 * 1)) ℤ) (P : Matrix (Fin (4 * 1)) (Fin 4 × ZMod 2) ℤ)
+    (Q : Matrix (Fin 4 × ZMod 2) (Fin (4 * 1)) ℤ) (x : Fin 4 → G → ℤ) (ρ : G)
+    (hPpair : ∀ r J : Fin 4, P r (J, 1) = P r (J, 0))
+    (hQpair : ∀ I : Fin 4, Q (I, 1) = Q (I, 0))
+    (h1 : H1 (s := 1) (collapseCol (Gbar' := Gbar') Q) (fun _ : Gbar' => 4))
+    (h2 : H2 x κ₀ (fun _ : Gbar' => 4))
+    (h3 : H3 (s := 1) E (collapseRow (Gbar' := Gbar') P) (Fintype.card G : ℤ)
+      (4 * ((Fintype.card G : ℤ) + 1)))
+    (h4 : H4 (s := 1) E (collapseRow (Gbar' := Gbar') P) (collapseCol Q) (chat κ₀ x ρ)) :
+    H1 (s := 1) Q (fun _ : ZMod 2 => 4) ∧ H2 x κ (fun _ : ZMod 2 => 4) ∧
+      H3 (s := 1) E P (w : ℤ) (4 * ((Fintype.card G : ℤ) + 1)) ∧
+      H4 (s := 1) E P Q (chat κ x ρ) ∧
+      border κ E P Q x ρ = border κ₀ E (collapseRow P) (collapseCol Q) x ρ :=
+  HadamardBFormalCore.theoremD_degenerate_converse κ κ₀ hw E P Q x ρ hPpair hQpair h1 h2 h3 h4
+
 theorem collapse_seedProblem_bijection {G : Type*} [AddCommGroup G] [Fintype G]
     (κ : G →+ ZMod 2) (x : Fin 4 → G → ℤ) :
     seedTwist κ (seedTwist κ x) = x ∧
@@ -349,36 +426,20 @@ def rho52 : G52 := 0
 
 def seed52Data : Vector (Vector Int 12) 4 :=
   #v[
-    #v[
-      -1, -1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1
-    ],
-    #v[
-      -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1, -1
-    ],
-    #v[
-      1, -1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1
-    ],
-    #v[
-      -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1
-    ]
+    #v[-1, -1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1],
+    #v[-1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1, -1],
+    #v[1, -1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1],
+    #v[-1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1]
   ]
 
 def seed52 : Fin 4 → G52 → ℤ := fun q g => (seed52Data.get q).get (gidx52 g)
 
 def corner52Data : Vector (Vector Int 4) 4 :=
   #v[
-    #v[
-      -1, -1, -1, 1
-    ],
-    #v[
-      -1, -1, 1, -1
-    ],
-    #v[
-      -1, 1, -1, -1
-    ],
-    #v[
-      1, -1, -1, -1
-    ]
+    #v[-1, -1, -1, 1],
+    #v[-1, -1, 1, -1],
+    #v[-1, 1, -1, -1],
+    #v[1, -1, -1, -1]
   ]
 
 def E52 : Matrix (Fin (4 * 1)) (Fin (4 * 1)) ℤ :=
@@ -386,18 +447,10 @@ def E52 : Matrix (Fin (4 * 1)) (Fin (4 * 1)) ℤ :=
 
 def rowTable52Data : Vector (Vector Int 8) 4 :=
   #v[
-    #v[
-      -1, 1, 1, -1, 1, -1, -1, 1
-    ],
-    #v[
-      1, -1, -1, 1, 1, -1, -1, 1
-    ],
-    #v[
-      1, -1, 1, -1, -1, 1, -1, 1
-    ],
-    #v[
-      -1, 1, -1, 1, -1, 1, -1, 1
-    ]
+    #v[-1, 1, 1, -1, 1, -1, -1, 1],
+    #v[1, -1, -1, 1, 1, -1, -1, 1],
+    #v[1, -1, 1, -1, -1, 1, -1, 1],
+    #v[-1, 1, -1, 1, -1, 1, -1, 1]
   ]
 
 def P52 : Matrix (Fin (4 * 1)) (Fin 4 × ZMod 2) ℤ :=
@@ -405,18 +458,10 @@ def P52 : Matrix (Fin (4 * 1)) (Fin 4 × ZMod 2) ℤ :=
 
 def colTable52Data : Vector (Vector Int 8) 4 :=
   #v[
-    #v[
-      1, -1, 1, -1, 1, -1, -1, 1
-    ],
-    #v[
-      -1, 1, -1, 1, 1, -1, -1, 1
-    ],
-    #v[
-      -1, 1, 1, -1, -1, 1, -1, 1
-    ],
-    #v[
-      1, -1, -1, 1, -1, 1, -1, 1
-    ]
+    #v[1, -1, 1, -1, 1, -1, -1, 1],
+    #v[-1, 1, -1, 1, 1, -1, -1, 1],
+    #v[-1, 1, 1, -1, -1, 1, -1, 1],
+    #v[1, -1, -1, 1, -1, 1, -1, 1]
   ]
 
 def Q52 : Matrix (Fin 4 × ZMod 2) (Fin (4 * 1)) ℤ :=
@@ -439,36 +484,20 @@ def rho20 : G20 := (1, 1)
 
 def seed20Data : Vector (Vector Int 4) 4 :=
   #v[
-    #v[
-      -1, -1, 1, 1
-    ],
-    #v[
-      -1, 1, -1, 1
-    ],
-    #v[
-      1, -1, -1, -1
-    ],
-    #v[
-      -1, -1, -1, -1
-    ]
+    #v[-1, -1, 1, 1],
+    #v[-1, 1, -1, 1],
+    #v[1, -1, -1, -1],
+    #v[-1, -1, -1, -1]
   ]
 
 def seed20 : Fin 4 → G20 → ℤ := fun q g => (seed20Data.get q).get (gidx20 g)
 
 def corner20Data : Vector (Vector Int 4) 4 :=
   #v[
-    #v[
-      -1, -1, -1, -1
-    ],
-    #v[
-      1, 1, -1, -1
-    ],
-    #v[
-      1, -1, 1, -1
-    ],
-    #v[
-      -1, 1, 1, -1
-    ]
+    #v[-1, -1, -1, -1],
+    #v[1, 1, -1, -1],
+    #v[1, -1, 1, -1],
+    #v[-1, 1, 1, -1]
   ]
 
 def E20 : Matrix (Fin (4 * 1)) (Fin (4 * 1)) ℤ :=
@@ -476,18 +505,10 @@ def E20 : Matrix (Fin (4 * 1)) (Fin (4 * 1)) ℤ :=
 
 def rowTable20Data : Vector (Vector Int 8) 4 :=
   #v[
-    #v[
-      -1, 1, 1, -1, -1, 1, 1, -1
-    ],
-    #v[
-      1, -1, 1, -1, -1, 1, -1, 1
-    ],
-    #v[
-      1, -1, -1, 1, -1, 1, 1, -1
-    ],
-    #v[
-      1, -1, 1, -1, 1, -1, 1, -1
-    ]
+    #v[-1, 1, 1, -1, -1, 1, 1, -1],
+    #v[1, -1, 1, -1, -1, 1, -1, 1],
+    #v[1, -1, -1, 1, -1, 1, 1, -1],
+    #v[1, -1, 1, -1, 1, -1, 1, -1]
   ]
 
 def P20 : Matrix (Fin (4 * 1)) (Fin 4 × ZMod 2) ℤ :=
@@ -495,30 +516,14 @@ def P20 : Matrix (Fin (4 * 1)) (Fin 4 × ZMod 2) ℤ :=
 
 def colRows20Data : Vector (Vector Int 4) 8 :=
   #v[
-    #v[
-      1, -1, -1, -1
-    ],
-    #v[
-      -1, 1, 1, 1
-    ],
-    #v[
-      -1, -1, 1, -1
-    ],
-    #v[
-      1, 1, -1, 1
-    ],
-    #v[
-      1, 1, 1, -1
-    ],
-    #v[
-      -1, -1, -1, 1
-    ],
-    #v[
-      1, -1, 1, 1
-    ],
-    #v[
-      -1, 1, -1, -1
-    ]
+    #v[1, -1, -1, -1],
+    #v[-1, 1, 1, 1],
+    #v[-1, -1, 1, -1],
+    #v[1, 1, -1, 1],
+    #v[1, 1, 1, -1],
+    #v[-1, -1, -1, 1],
+    #v[1, -1, 1, 1],
+    #v[-1, 1, -1, -1]
   ]
 
 def Q20 : Matrix (Fin 4 × ZMod 2) (Fin (4 * 1)) ℤ :=

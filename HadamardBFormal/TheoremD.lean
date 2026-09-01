@@ -34,10 +34,11 @@ identities of `NOTE-B` §1.5 — the differenced table `chat_colDiff` and the su
 `B ↦ B 0 c + B 1 c`.  `forcing_split` isolates the integer forcing argument of (D-c)
 as a statement about four integers, leaving the matrix argument as bookkeeping.
 
-**Scope.**  (D-a′), the collapse of the degenerate branch `M = 4J₂`, is *not*
-formalized here; this file proves the genuine branch.  The `768²` census of (D-e) is
-labelled MEASURED in the note and is not a theorem.  `theoremD_transport` and the §1.6
-collapse corollary are a later stage.
+**Scope.**  This file proves the genuine branch; (D-a′), the collapse of the degenerate
+branch `M = 4J₂`, is `Degenerate.lean`, which starts from this file's
+`theoremD_tables_degenerate`.  The `768²` census of (D-e) is labelled MEASURED in the
+note and is not a theorem.  `theoremD_transport` and the §1.6 collapse corollary are
+`Collapse.lean`.
 -/
 
 namespace HadamardBFormalCore

@@ -189,13 +189,15 @@ status:
     Theorem D clauses (D-a)/(D-b) (the forced Gram table and pair-negated
     column table), (D-c) (the forced row table and Hadamard corner), (D-d)
     (the collapse of (H4) to a single 4x4 equation), the integer Parseval
-    identity behind (D-d), and the transport half of (D-e); the index-2
-    seed-problem bijection; and the two witness instances at orders 52 and 20
-    with their existence corollaries. Not formalized: Theorem C's forced
+    identity behind (D-d), clause (D-a') in full (the degenerate M = 4J branch
+    collapses: both border tables pair up equal, the assembled matrix is the
+    i = 1 assembly entry for entry, and (H1)-(H4) transport termwise, in both
+    directions), and both halves of the (D-e) transport, packaged as an
+    exactly-when; the index-2 seed-problem bijection; and the two witness
+    instances at orders 52 and 20 with their existence corollaries. Not formalized: Theorem C's forced
     parameter clauses D1-D4 and the classification corollary that reads them
     off (they need positive semidefiniteness and rank over the reals and
     character orthogonality over the complexes; only D5 and D6 are in scope);
-    clause (D-a') of Theorem D, the collapse of the degenerate M = 4J branch;
     the characteristic-subgroup and automorphism-equivariance clauses of the
     index-2 collapse corollary (NOTE-B section 1.6); the section-3 separation
     theorem at order 668 and its invariants, whose exact 4-profiles are
@@ -295,6 +297,26 @@ status:
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "comparator.json"
+    - declaration: "HadamardBFormal.theoremD_transport_converse"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HadamardBFormal.theoremD_transport_iff"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HadamardBFormal.theoremD_degenerate_collapse"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "HadamardBFormal.theoremD_degenerate_converse"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
     - declaration: "HadamardBFormal.collapse_seedProblem_bijection"
       file: "Solution.lean"
       sorry_count: 0
@@ -366,9 +388,11 @@ fidelity:
     rather than derived from surjectivity; the border tables are indexed by
     Fin 4 x Gbar rather than by Fin (4i). Theorem C is represented only by its
     two row-sum rows D5 and D6: the forced-parameter clauses D1-D4 and the
-    classification corollary are not formalized. Clause (D-a') of Theorem D,
-    the collapse of the degenerate M = 4J branch, is not formalized; the
-    genuine branch is. The section-3 separation at order 668 is not formalized
+    classification corollary are not formalized. Clause (D-a') is stated with
+    the trivial quotient carried as any additive hom into a subsingleton type,
+    matching borderedGS_subsingleton, and the doubling of an i = 1 border is
+    encoded by the two pair-equality hypotheses rather than by a separate
+    doubling operator. The section-3 separation at order 668 is not formalized
     and is outside kernel reach. Where the note writes Fin 4 for a corner at
     s = 1, several statements carry the definitionally equal Fin (4 * 1); this
     is cosmetic. Proof-level. theoremD_tables is proved by an integer route -
@@ -377,12 +401,17 @@ fidelity:
     against it forces M(1)^2 = 16 - rather than by the note's rank and
     positive-semidefiniteness argument over the reals; the statement is
     faithful and the proof route differs. theoremD_transport takes the note's
-    corrected (D-e) condition d = r as an explicit hypothesis rather than
-    deriving it, and takes the transported i = 1 system in the reduced
-    border-equation form E1 Q1-transpose + P1 Lambda(r)-transpose = 0.
-    deltaSqSum_eq_four is proved without surjectivity of kappa, which the
-    note's Parseval phrasing assumes. D5 likewise uses only the size of the
-    fiber over zero. Several statements drop hypotheses the note's ambient
+    (D-e) condition d = r as an explicit hypothesis, and takes the transported
+    i = 1 system in the reduced border-equation form
+    E1 Q1-transpose + P1 Lambda(r)-transpose = 0; theoremD_transport_converse
+    supplies the missing direction - d = r is forced - and cancels the two 4x4
+    Hadamard factors over the integers, through Q1 Q1-transpose = 4I,
+    P1-transpose P1 = 4I and torsion-freeness, where the note inverts P1 over
+    the rationals. deltaSqSum_eq_four is proved without surjectivity of kappa,
+    which the note's Parseval phrasing assumes; its degenerate-branch companion
+    deltaSqSum_degenerate does need the two fibers to have equal size, which is
+    where the index enters. D5 now takes only the size of the fiber over zero
+    as its hypothesis, that being all its proof ever used. Several statements drop hypotheses the note's ambient
     setting carries, always in the strengthening direction: D5 and D6 do not
     assume w > 2s; lemmaT does not assume the character's kernel has index 2;
     theoremD_rowTable does not assume Q sign-valued (the pair-negation
@@ -524,6 +553,50 @@ alignment:
         Doubling an index-1 border and twisting the seeds gives a valid index-2
         instance, under the note's condition d = r, which is carried here as an
         explicit hypothesis and is automatic in the epsilon = +1 branch.
+    - source: "NOTE-B section 1.5, (D-e) transport, converse direction"
+      lean: "HadamardBFormal.theoremD_transport_converse"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        The note's condition d = r is forced, not assumed: if the doubled
+        tables satisfy (H4) at index two then the transported system reads
+        P1 Lambda(d)-transpose Q1 = P1 Lambda(r)-transpose Q1, and cancelling
+        the two 4x4 Hadamard factors over the integers leaves Lambda(d) =
+        Lambda(r), with Lambda injective.
+    - source: "NOTE-B section 1.5, (D-e) transport, the exactly-when"
+      lean: "HadamardBFormal.theoremD_transport_iff"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        The two halves packaged: the doubled border is Hadamard if and only if
+        d = r. The forward direction routes the Hadamard hypothesis through
+        Theorem A to recover (H4) at index two; equal nonempty fibers make
+        kappa surjective, so no extra hypothesis is needed.
+    - source: "NOTE-B section 1.5, clause (D-a prime)"
+      lean: "HadamardBFormal.theoremD_degenerate_collapse"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        The degenerate branch M(1) = +4 collapses onto the index-1
+        construction: Q pairs up equal, P pairs up equal, the assembled matrix
+        equals the index-1 assembly entry for entry, and (H1)-(H4) transport
+        termwise onto the collapsed tables over a trivial quotient - (H1) with
+        M1 = (4), (H2) the index-1 profile, (H3) at fiber size n rather than w,
+        (H4) the index-1 border equation with the row-sum vector r where the
+        genuine branch has the twisted vector d. The engine is the
+        degenerate-branch Parseval sum_q delta_q^2 = N, which makes Lambda(d)
+        nonsingular and kills the column differences of P - the exact mirror of
+        (D-c), where Lambda(r) is inverted and the column sums die.
+    - source: "NOTE-B section 1.5, clause (D-a prime), converse direction"
+      lean: "HadamardBFormal.theoremD_degenerate_converse"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        Conversely, doubling any index-1 border gives (H1)-(H4) with M = 4J and
+        the same assembled matrix. Doubling is encoded by the two pair-equality
+        hypotheses: tables over ZMod 2 that repeat each block along the two
+        classes are precisely the doublings of their own collapsed tables. With
+        the forward clause this is the note's bijection.
     - source: "NOTE-B section 1.6, Corollary (the seed-problem bijection clause)"
       lean: "HadamardBFormal.collapse_seedProblem_bijection"
       module: "Solution"

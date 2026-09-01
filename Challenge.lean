@@ -249,6 +249,18 @@ def doubleRow (P : Matrix (Fin 4) (Fin 4) ℤ) : Matrix (Fin (4 * 1)) (Fin 4 × 
 def doubleCol (Q : Matrix (Fin 4) (Fin 4) ℤ) : Matrix (Fin 4 × ZMod 2) (Fin (4 * 1)) ℤ :=
   fun z c => if z.2 = 0 then Q z.1 c else -Q z.1 c
 
+/-- The collapsed row table `P₁[r][J] = P[r][(J,0)]`, read over a trivial
+quotient (`NOTE-B` §1.5, (D-a′)). -/
+def collapseRow {Gbar' : Type*} (P : Matrix (Fin (4 * 1)) (Fin 4 × ZMod 2) ℤ) :
+    Matrix (Fin (4 * 1)) (Fin 4 × Gbar') ℤ :=
+  fun r z => P r (z.1, 0)
+
+/-- The collapsed column table `Q₁[I] = Q[(I,0)]`, read over a trivial
+quotient (`NOTE-B` §1.5, (D-a′)). -/
+def collapseCol {Gbar' : Type*} (Q : Matrix (Fin 4 × ZMod 2) (Fin (4 * 1)) ℤ) :
+    Matrix (Fin 4 × Gbar') (Fin (4 * 1)) ℤ :=
+  fun z c => Q (z.1, 0) c
+
 /-! ## Theorem A (`NOTE-B` §1.1) -/
 
 /-- **Theorem A, sufficiency** (`NOTE-B` §1.1).
@@ -549,6 +561,105 @@ theorem theoremD_transport {G : Type*} [Fintype G] [AddCommGroup G] [DecidableEq
     Matrix.IsHadamard (border κ E₁ (doubleRow P₁) (doubleCol Q₁) (seedTwist κ x) ρ) := by
   sorry
 
+/-- **The converse of the transport clause of (D-e)** (`NOTE-B` §1.5).
+
+The note's hypothesis `d = r` is forced.  If the doubled tables satisfy (H4)
+at `i = 2` then the transported system reads `P₁ Λ(d)ᵀ Q₁ = P₁ Λ(r)ᵀ Q₁`;
+cancelling the two `4 × 4` Hadamard factors over `ℤ` — through
+`Q₁ Q₁ᵀ = 4·I₄`, `P₁ᵀ P₁ = 4·I₄` and torsion-freeness — leaves
+`Λ(d) = Λ(r)`, and `Λ` is injective. -/
+theorem theoremD_transport_converse {G : Type*} [Fintype G] [AddCommGroup G]
+    (κ : G →+ ZMod 2)
+    (E₁ : Matrix (Fin (4 * 1)) (Fin (4 * 1)) ℤ) (P₁ Q₁ : Matrix (Fin 4) (Fin 4) ℤ)
+    (x : Fin 4 → G → ℤ) (ρ : G)
+    (hP : ∀ r J, IsSign (P₁ r J)) (hQ : ∀ I c, IsSign (Q₁ I c))
+    (hPgram : P₁ * P₁.transpose = (4 : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ))
+    (hQgram : Q₁ * Q₁.transpose = (4 : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ))
+    (h4 : E₁ * Q₁.transpose + P₁ * (Lam (rvec x)).transpose = 0)
+    (h4' : H4 (s := 1) E₁ (doubleRow P₁) (doubleCol Q₁) (chat κ (seedTwist κ x) ρ)) :
+    dvec κ (seedTwist κ x) ρ = rvec x := by
+  sorry
+
+/-- **The transport, as the note's "exactly when"** (`NOTE-B` §1.5, (D-e)).
+Doubling an `i = 1` border and twisting the seeds produces a valid `i = 2`
+border **if and only if** `d = r`. -/
+theorem theoremD_transport_iff {G : Type*} [Fintype G] [AddCommGroup G] [DecidableEq G]
+    {w : ℕ} (κ : G →+ ZMod 2)
+    (hw : ∀ c : ZMod 2, (Finset.univ.filter fun g : G => κ g = c).card = w)
+    (E₁ : Matrix (Fin (4 * 1)) (Fin (4 * 1)) ℤ) (P₁ Q₁ : Matrix (Fin 4) (Fin 4) ℤ)
+    (x : Fin 4 → G → ℤ) (ρ : G)
+    (hE : ∀ r c, IsSign (E₁ r c)) (hP : ∀ r J, IsSign (P₁ r J)) (hQ : ∀ I c, IsSign (Q₁ I c))
+    (hx : ∀ q g, IsSign (x q g))
+    (hPgram : P₁ * P₁.transpose = (4 : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ))
+    (hQgram : Q₁ * Q₁.transpose = (4 : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ))
+    (hprofile : ∀ t : G, t ≠ 0 → sumPaf x t = -4)
+    (h3 : E₁ * E₁.transpose + (Fintype.card G : ℤ) • (P₁ * P₁.transpose)
+      = (4 * ((Fintype.card G : ℤ) + 1)) • 1)
+    (h4 : E₁ * Q₁.transpose + P₁ * (Lam (rvec x)).transpose = 0) :
+    Matrix.IsHadamard (border κ E₁ (doubleRow P₁) (doubleCol Q₁) (seedTwist κ x) ρ) ↔
+      dvec κ (seedTwist κ x) ρ = rvec x := by
+  sorry
+
+/-- **Theorem D, clause (D-a′)** (`NOTE-B` §1.5): *the degenerate branch
+collapses, and this is exactly what that means.*
+
+In the branch `M(1) = +4` — where `M = 4J₂`, both tiers of the profile
+coalesce and (H2) reads `Σ PAF(t) = −4` for every `t ≠ 0` — the border data
+**is** `i = 1` data written in `i = 2` bookkeeping: `Q` pairs up **equal**,
+`P` pairs up **equal**, the assembled matrix is the `i = 1` assembly *entry
+for entry*, and (H1)–(H4) transport termwise onto the collapsed tables over a
+trivial quotient — (H1) with `M₁ = (4)`, (H2) the `i = 1` profile, (H3) at
+fiber size `n` rather than `w`, and (H4) the `i = 1` border equation
+`E Q₁ᵀ + P₁ Λ(r)ᵀ = 0`, with the row-sum vector `r` where the genuine branch
+has the twisted vector `d`.  `K` is invisible in the collapsed data. -/
+theorem theoremD_degenerate_collapse {G Gbar' : Type*} [Fintype G] [AddCommGroup G]
+    [AddCommGroup Gbar'] [Fintype Gbar'] [DecidableEq Gbar'] [Subsingleton Gbar'] {w : ℕ}
+    (κ : G →+ ZMod 2) (κ₀ : G →+ Gbar')
+    (hw : ∀ c : ZMod 2, (Finset.univ.filter fun g : G => κ g = c).card = w)
+    (E : Matrix (Fin (4 * 1)) (Fin (4 * 1)) ℤ) (P : Matrix (Fin (4 * 1)) (Fin 4 × ZMod 2) ℤ)
+    (Q : Matrix (Fin 4 × ZMod 2) (Fin (4 * 1)) ℤ) (x : Fin 4 → G → ℤ) (ρ : G)
+    (hQ : ∀ z c, IsSign (Q z c)) (hx : ∀ q g, IsSign (x q g))
+    (M : ZMod 2 → ℤ) (hM1 : M 1 = 4) (h1 : H1 (s := 1) Q M) (h2 : H2 x κ M)
+    (h3 : H3 (s := 1) E P (w : ℤ) (4 * ((Fintype.card G : ℤ) + 1)))
+    (h4 : H4 (s := 1) E P Q (chat κ x ρ)) :
+    (∀ I : Fin 4, Q (I, 1) = Q (I, 0)) ∧
+      (∀ r J : Fin 4, P r (J, 1) = P r (J, 0)) ∧
+      border κ E P Q x ρ = border κ₀ E (collapseRow P) (collapseCol Q) x ρ ∧
+      H1 (s := 1) (collapseCol (Gbar' := Gbar') Q) (fun _ : Gbar' => 4) ∧
+      H2 x κ₀ (fun _ : Gbar' => 4) ∧
+      H3 (s := 1) E (collapseRow (Gbar' := Gbar') P) (Fintype.card G : ℤ)
+        (4 * ((Fintype.card G : ℤ) + 1)) ∧
+      H4 (s := 1) E (collapseRow (Gbar' := Gbar') P) (collapseCol Q) (chat κ₀ x ρ) := by
+  sorry
+
+/-- **The converse of (D-a′)** (`NOTE-B` §1.5): *conversely, doubling any
+`i = 1` border gives (H1)–(H4) with `M = 4J₂`.*
+
+Doubling is encoded by the two pair-equality hypotheses: tables over `ZMod 2`
+that repeat each block along the two classes are precisely the doublings of
+their own collapsed tables.  With `theoremD_degenerate_collapse` this is the
+note's bijection between the `(s,i) = (1,1)` borders and the
+degenerate-branch `(s,i) = (1,2)` borders, and it does not move the assembled
+matrix. -/
+theorem theoremD_degenerate_converse {G Gbar' : Type*} [Fintype G] [AddCommGroup G]
+    [AddCommGroup Gbar'] [Fintype Gbar'] [DecidableEq Gbar'] [Subsingleton Gbar'] {w : ℕ}
+    (κ : G →+ ZMod 2) (κ₀ : G →+ Gbar')
+    (hw : ∀ c : ZMod 2, (Finset.univ.filter fun g : G => κ g = c).card = w)
+    (E : Matrix (Fin (4 * 1)) (Fin (4 * 1)) ℤ) (P : Matrix (Fin (4 * 1)) (Fin 4 × ZMod 2) ℤ)
+    (Q : Matrix (Fin 4 × ZMod 2) (Fin (4 * 1)) ℤ) (x : Fin 4 → G → ℤ) (ρ : G)
+    (hPpair : ∀ r J : Fin 4, P r (J, 1) = P r (J, 0))
+    (hQpair : ∀ I : Fin 4, Q (I, 1) = Q (I, 0))
+    (h1 : H1 (s := 1) (collapseCol (Gbar' := Gbar') Q) (fun _ : Gbar' => 4))
+    (h2 : H2 x κ₀ (fun _ : Gbar' => 4))
+    (h3 : H3 (s := 1) E (collapseRow (Gbar' := Gbar') P) (Fintype.card G : ℤ)
+      (4 * ((Fintype.card G : ℤ) + 1)))
+    (h4 : H4 (s := 1) E (collapseRow (Gbar' := Gbar') P) (collapseCol Q) (chat κ₀ x ρ)) :
+    H1 (s := 1) Q (fun _ : ZMod 2 => 4) ∧ H2 x κ (fun _ : ZMod 2 => 4) ∧
+      H3 (s := 1) E P (w : ℤ) (4 * ((Fintype.card G : ℤ) + 1)) ∧
+      H4 (s := 1) E P Q (chat κ x ρ) ∧
+      border κ E P Q x ρ = border κ₀ E (collapseRow P) (collapseCol Q) x ρ := by
+  sorry
+
 /-! ## The index-two collapse (`NOTE-B` §1.6) -/
 
 /-- **The index-two collapse, seed-problem bijection** (`NOTE-B` §1.6,
@@ -614,18 +725,10 @@ def rho52 : G52 := 0
 /-- The seed literals of the gate record. -/
 def seed52Data : Vector (Vector Int 12) 4 :=
   #v[
-    #v[
-      -1, -1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1
-    ],
-    #v[
-      -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1, -1
-    ],
-    #v[
-      1, -1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1
-    ],
-    #v[
-      -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1
-    ]
+    #v[-1, -1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1],
+    #v[-1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1, -1],
+    #v[1, -1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1],
+    #v[-1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1]
   ]
 
 /-- The four seed sequences of the gate record, as functions on `G`. -/
@@ -634,18 +737,10 @@ def seed52 : Fin 4 → G52 → ℤ := fun q g => (seed52Data.get q).get (gidx52 
 /-- The corner literals of the gate record. -/
 def corner52Data : Vector (Vector Int 4) 4 :=
   #v[
-    #v[
-      -1, -1, -1, 1
-    ],
-    #v[
-      -1, -1, 1, -1
-    ],
-    #v[
-      -1, 1, -1, -1
-    ],
-    #v[
-      1, -1, -1, -1
-    ]
+    #v[-1, -1, -1, 1],
+    #v[-1, -1, 1, -1],
+    #v[-1, 1, -1, -1],
+    #v[1, -1, -1, -1]
   ]
 
 /-- The corner `E` of the gate record. -/
@@ -655,18 +750,10 @@ def E52 : Matrix (Fin (4 * 1)) (Fin (4 * 1)) ℤ :=
 /-- The row-table literals of the gate record. -/
 def rowTable52Data : Vector (Vector Int 8) 4 :=
   #v[
-    #v[
-      -1, 1, 1, -1, 1, -1, -1, 1
-    ],
-    #v[
-      1, -1, -1, 1, 1, -1, -1, 1
-    ],
-    #v[
-      1, -1, 1, -1, -1, 1, -1, 1
-    ],
-    #v[
-      -1, 1, -1, 1, -1, 1, -1, 1
-    ]
+    #v[-1, 1, 1, -1, 1, -1, -1, 1],
+    #v[1, -1, -1, 1, 1, -1, -1, 1],
+    #v[1, -1, 1, -1, -1, 1, -1, 1],
+    #v[-1, 1, -1, 1, -1, 1, -1, 1]
   ]
 
 /-- The row table `P` of the gate record, indexed by `Fin 4 × ZMod 2`. -/
@@ -676,18 +763,10 @@ def P52 : Matrix (Fin (4 * 1)) (Fin 4 × ZMod 2) ℤ :=
 /-- The column-table literals of the gate record. -/
 def colTable52Data : Vector (Vector Int 8) 4 :=
   #v[
-    #v[
-      1, -1, 1, -1, 1, -1, -1, 1
-    ],
-    #v[
-      -1, 1, -1, 1, 1, -1, -1, 1
-    ],
-    #v[
-      -1, 1, 1, -1, -1, 1, -1, 1
-    ],
-    #v[
-      1, -1, -1, 1, -1, 1, -1, 1
-    ]
+    #v[1, -1, 1, -1, 1, -1, -1, 1],
+    #v[-1, 1, -1, 1, 1, -1, -1, 1],
+    #v[-1, 1, 1, -1, -1, 1, -1, 1],
+    #v[1, -1, -1, 1, -1, 1, -1, 1]
   ]
 
 /-- The column table `Q` of the gate record.  The record stores it transposed:
@@ -728,18 +807,10 @@ def rho20 : G20 := (1, 1)
 /-- The seed literals of the boundary record. -/
 def seed20Data : Vector (Vector Int 4) 4 :=
   #v[
-    #v[
-      -1, -1, 1, 1
-    ],
-    #v[
-      -1, 1, -1, 1
-    ],
-    #v[
-      1, -1, -1, -1
-    ],
-    #v[
-      -1, -1, -1, -1
-    ]
+    #v[-1, -1, 1, 1],
+    #v[-1, 1, -1, 1],
+    #v[1, -1, -1, -1],
+    #v[-1, -1, -1, -1]
   ]
 
 /-- The four seed sequences of the boundary record. -/
@@ -748,18 +819,10 @@ def seed20 : Fin 4 → G20 → ℤ := fun q g => (seed20Data.get q).get (gidx20 
 /-- The corner literals of the boundary record. -/
 def corner20Data : Vector (Vector Int 4) 4 :=
   #v[
-    #v[
-      -1, -1, -1, -1
-    ],
-    #v[
-      1, 1, -1, -1
-    ],
-    #v[
-      1, -1, 1, -1
-    ],
-    #v[
-      -1, 1, 1, -1
-    ]
+    #v[-1, -1, -1, -1],
+    #v[1, 1, -1, -1],
+    #v[1, -1, 1, -1],
+    #v[-1, 1, 1, -1]
   ]
 
 /-- The corner `E` of the boundary record. -/
@@ -769,18 +832,10 @@ def E20 : Matrix (Fin (4 * 1)) (Fin (4 * 1)) ℤ :=
 /-- The row-table literals of the boundary record. -/
 def rowTable20Data : Vector (Vector Int 8) 4 :=
   #v[
-    #v[
-      -1, 1, 1, -1, -1, 1, 1, -1
-    ],
-    #v[
-      1, -1, 1, -1, -1, 1, -1, 1
-    ],
-    #v[
-      1, -1, -1, 1, -1, 1, 1, -1
-    ],
-    #v[
-      1, -1, 1, -1, 1, -1, 1, -1
-    ]
+    #v[-1, 1, 1, -1, -1, 1, 1, -1],
+    #v[1, -1, 1, -1, -1, 1, -1, 1],
+    #v[1, -1, -1, 1, -1, 1, 1, -1],
+    #v[1, -1, 1, -1, 1, -1, 1, -1]
   ]
 
 /-- The row table `P` of the boundary record. -/
@@ -790,30 +845,14 @@ def P20 : Matrix (Fin (4 * 1)) (Fin 4 × ZMod 2) ℤ :=
 /-- The column-table literals of the boundary record. -/
 def colRows20Data : Vector (Vector Int 4) 8 :=
   #v[
-    #v[
-      1, -1, -1, -1
-    ],
-    #v[
-      -1, 1, 1, 1
-    ],
-    #v[
-      -1, -1, 1, -1
-    ],
-    #v[
-      1, 1, -1, 1
-    ],
-    #v[
-      1, 1, 1, -1
-    ],
-    #v[
-      -1, -1, -1, 1
-    ],
-    #v[
-      1, -1, 1, 1
-    ],
-    #v[
-      -1, 1, -1, -1
-    ]
+    #v[1, -1, -1, -1],
+    #v[-1, 1, 1, 1],
+    #v[-1, -1, 1, -1],
+    #v[1, 1, -1, 1],
+    #v[1, 1, 1, -1],
+    #v[-1, -1, -1, 1],
+    #v[1, -1, 1, 1],
+    #v[-1, 1, -1, -1]
   ]
 
 /-- The column table `Q` of the boundary record.  This record stores `Q` row by
