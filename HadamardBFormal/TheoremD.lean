@@ -40,7 +40,7 @@ labelled MEASURED in the note and is not a theorem.  `theoremD_transport` and th
 collapse corollary are a later stage.
 -/
 
-namespace HadamardBFormal
+namespace HadamardBFormalCore
 
 open scoped BigOperators Matrix
 
@@ -930,4 +930,4 @@ theorem theoremD_border {G : Type*} [Fintype G] [AddCommGroup G] (κ : G →+ ZM
     simp only [Matrix.add_apply, Matrix.zero_apply]
     omega
 
-end HadamardBFormal
+end HadamardBFormalCore

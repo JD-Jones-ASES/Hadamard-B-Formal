@@ -26,11 +26,11 @@ the build would go red.  `H1`--`H4` are `def`s rather than `abbrev`s, so each
 check unfolds its hypothesis before handing the goal to `decide`.
 -/
 
-namespace HadamardBFormal.Data
+namespace HadamardBFormalCore.Data
 
 open scoped BigOperators Matrix
 
-open HadamardBFormal
+open HadamardBFormalCore
 
 /-! ### The group -/
 
@@ -178,4 +178,4 @@ theorem h4_20 : H4 (s := 1) E20 P20 Q20 (chat kappa20 seed20 rho20) := by
   unfold H4
   decide
 
-end HadamardBFormal.Data
+end HadamardBFormalCore.Data

@@ -45,7 +45,7 @@ is exactly `gram_sameSuperblock_ne` used twice.
   hypothesis (`NOTE-B` §1.1 states `M` symmetric; it need not be assumed).
 -/
 
-namespace HadamardBFormal
+namespace HadamardBFormalCore
 
 open scoped BigOperators Matrix
 
@@ -272,4 +272,4 @@ theorem theoremA {G Gbar : Type*} [AddCommGroup G] [Fintype G] [DecidableEq G]
   · rintro ⟨⟨M, h1, h2⟩, h3, h4⟩
     exact theoremA_sufficiency κ hw E P Q x ρ hE hP hQ hx M h1 h2 h3 h4
 
-end HadamardBFormal
+end HadamardBFormalCore

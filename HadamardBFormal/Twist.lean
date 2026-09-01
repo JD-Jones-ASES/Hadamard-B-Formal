@@ -26,7 +26,7 @@ The factorisation of `ψ` through the quotient is supplied as **data** (`ψbar`
 together with `hfac`), which is exactly what the border strips need.
 -/
 
-namespace HadamardBFormal
+namespace HadamardBFormalCore
 
 open scoped BigOperators Matrix
 
@@ -294,4 +294,4 @@ theorem twist_isHadamard_iff {G Gbar : Type*} [AddCommGroup G] [Fintype G] [Deci
   rw [twist_isConjugation κ ψ hsq ψbar hfac ρ hρ E P Q x, twistConj_eq_diagonal]
   exact isHadamard_diagonal_conj_iff _ (twistDiagVec_mul_self s ψ hsq) _
 
-end HadamardBFormal
+end HadamardBFormalCore

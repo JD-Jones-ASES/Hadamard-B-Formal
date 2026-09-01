@@ -42,9 +42,9 @@ property of this data is checked by kernel reduction in
 Theorem A in `HadamardBFormal/Results.lean`.
 -/
 
-namespace HadamardBFormal.Data
+namespace HadamardBFormalCore.Data
 
-open HadamardBFormal
+open HadamardBFormalCore
 
 /-- The gate group `G = ZMod 2 x ZMod 2 x ZMod 3`, of order 12. -/
 abbrev G52 : Type := ZMod 2 × ZMod 2 × ZMod 3
@@ -278,4 +278,4 @@ row — `Q[(I,b)][r] = col_rows[2I + b][r]` — not transposed. -/
 def Q20 : Matrix (Fin 4 × ZMod 2) (Fin (4 * 1)) ℤ :=
   fun z c => (colRows20Data.get (pairIdx z)).get c
 
-end HadamardBFormal.Data
+end HadamardBFormalCore.Data

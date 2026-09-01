@@ -9,12 +9,12 @@ Index conventions, matched to `Hadamard-B/tools/bordered_gs.py`:
 
 * `AbelianGroup.idx` is row-major mixed radix, so for `G = Z2 x Z2 x Z3` the flat
   seed index of `(a, b, c)` is `6a + 3b + c`.  The Lean side computes the same
-  index in `HadamardBFormal.Data.gidx52`.
+  index in `HadamardBFormalCore.Data.gidx52`.
 * `coset_divisors = [2, 1, 1]` makes `kappa` the first coordinate, i.e. the
   index-two character of `G`.
 * the border tables are `4s x 4i` with the class index running fastest, so the
   flat column index of the pair `(J, b)` is `2J + b`
-  (`HadamardBFormal.Data.pairIdx`), and `col_table` is stored transposed:
+  (`HadamardBFormalCore.Data.pairIdx`), and `col_table` is stored transposed:
   `Q[(I,b)][r] = col_table[r][2I + b]`.
 
 The index convention is deliberately *not* proved correct.  If it were wrong the
@@ -369,9 +369,9 @@ def render(source_root: Path) -> str:
             "Theorem A in `HadamardBFormal/Results.lean`.",
             "-/",
             "",
-            "namespace HadamardBFormal.Data",
+            "namespace HadamardBFormalCore.Data",
             "",
-            "open HadamardBFormal",
+            "open HadamardBFormalCore",
             "",
             "/-- The gate group `G = ZMod 2 x ZMod 2 x ZMod 3`, of order 12. -/",
             "abbrev G52 : Type := ZMod 2 × ZMod 2 × ZMod 3",
@@ -518,7 +518,7 @@ def render(source_root: Path) -> str:
             "def Q20 : Matrix (Fin 4 × ZMod 2) (Fin (4 * 1)) ℤ :=",
             "  fun z c => (colRows20Data.get (pairIdx z)).get c",
             "",
-            "end HadamardBFormal.Data",
+            "end HadamardBFormalCore.Data",
             "",
         ]
     )

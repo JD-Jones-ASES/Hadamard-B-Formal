@@ -27,11 +27,11 @@ or its `52³` product.  It checks `O(n²)` worth of hypotheses on a group of ord
 through Theorem A rather than through a matrix multiplication.
 -/
 
-namespace HadamardBFormal.Data
+namespace HadamardBFormalCore.Data
 
 open scoped BigOperators Matrix
 
-open HadamardBFormal
+open HadamardBFormalCore
 
 /-- **The `H(52)` gate instance.**  The bordered Goethals--Seidel array of the gate
 record is a Hadamard matrix of order `4(12+1) = 52`.
@@ -102,4 +102,4 @@ theorem hadamardExists_20 : HadamardExists 20 :=
   ⟨_, isHadamardOn_reindex hadamard_20_bordered
     ((Fintype.equivFin _).trans (finCongr card_border20))⟩
 
-end HadamardBFormal.Data
+end HadamardBFormalCore.Data

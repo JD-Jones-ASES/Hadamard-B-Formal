@@ -48,7 +48,7 @@ classification corollary are deliberately out of scope (they need positive
 semidefiniteness, rank over `ℝ`, and character orthogonality over `ℂ`).
 -/
 
-namespace HadamardBFormal
+namespace HadamardBFormalCore
 
 open scoped BigOperators Matrix
 
@@ -392,4 +392,4 @@ theorem D6 {G Gbar : Type*} [Fintype G] [AddCommGroup G]
   rw [hgoal]
   omega
 
-end HadamardBFormal
+end HadamardBFormalCore

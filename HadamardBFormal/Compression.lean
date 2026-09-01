@@ -47,7 +47,7 @@ the constancy of the fiber size enters, through `rowStrip_mul_transpose`.  (It i
 the necessity direction that needs every `t` in a coset to be realised.)
 -/
 
-namespace HadamardBFormal
+namespace HadamardBFormalCore
 
 open scoped BigOperators Matrix
 
@@ -355,4 +355,4 @@ theorem theoremA_sufficiency {G Gbar : Type*} [AddCommGroup G] [Fintype G] [Deci
   · rw [isRegular_iff_ne_zero, hcard]
     omega
 
-end HadamardBFormal
+end HadamardBFormalCore

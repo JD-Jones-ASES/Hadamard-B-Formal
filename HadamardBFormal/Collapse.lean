@@ -43,7 +43,7 @@ The proof of `theoremD_transport` uses no new machinery: `theoremD_border`
 `sumPaf_twist` transports the profile, and `theoremA_sufficiency` assembles.
 -/
 
-namespace HadamardBFormal
+namespace HadamardBFormalCore
 
 open scoped BigOperators Matrix
 
@@ -385,4 +385,4 @@ theorem collapse_seedProblem_bijection {G : Type*} [AddCommGroup G] [Fintype G]
     ⟨fun h t ht => by rw [h t ht, hM t], fun h t ht => by rw [h t ht, ← hM t]⟩]
   exact twist_profile_iff (psi2 κ) (psi2_sq κ) κ (fun _ => rfl) x
 
-end HadamardBFormal
+end HadamardBFormalCore

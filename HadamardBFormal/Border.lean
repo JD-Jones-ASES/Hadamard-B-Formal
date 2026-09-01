@@ -32,7 +32,7 @@ ansatz shares:
 Theorem A itself is a later stage.
 -/
 
-namespace HadamardBFormal
+namespace HadamardBFormalCore
 
 open scoped BigOperators Matrix
 
@@ -208,4 +208,4 @@ theorem border_isSign [AddCommGroup G] [AddCommGroup Gbar] {s : ℕ} (κ : G →
     | inl c => exact hQ _ c
     | inr y => exact core_isSign x ρ hx z y
 
-end HadamardBFormal
+end HadamardBFormalCore

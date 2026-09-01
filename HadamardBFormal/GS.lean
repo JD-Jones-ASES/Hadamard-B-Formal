@@ -37,7 +37,7 @@ seeds reach the Gram.  The proof is the orientation-flipped port of
 `Hadamard-formal`'s `goethalsSeidel_block_mul_transpose`.
 -/
 
-namespace HadamardBFormal
+namespace HadamardBFormalCore
 
 open scoped BigOperators Matrix
 
@@ -151,4 +151,4 @@ theorem core_gram {G : Type*} [Fintype G] [AddCommGroup G] (x : Fin 4 → G → 
     exact Finset.sum_congr rfl fun q _ => dev_mul_transpose_apply (x q) g h
   · rw [if_neg hab, if_neg hab, Matrix.zero_apply]
 
-end HadamardBFormal
+end HadamardBFormalCore

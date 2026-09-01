@@ -32,7 +32,7 @@ An alternative proof of (a) is mathlib's `Matrix.circulant_mul_comm`; the bridge
 mathlib's circulant module is recorded as `dev_eq_circulant_transpose`.
 -/
 
-namespace HadamardBFormal
+namespace HadamardBFormalCore
 
 open scoped BigOperators Matrix
 
@@ -206,4 +206,4 @@ theorem revCols_revCols_mul {G : Type*} [Fintype G] (r : Equiv.Perm G)
       rw [hr j] at h
       exact h
 
-end HadamardBFormal
+end HadamardBFormalCore

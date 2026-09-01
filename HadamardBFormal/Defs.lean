@@ -29,7 +29,7 @@ The `IsSign` / `IsHadamardOn` layer is ported from the sibling repository
 matches on the nose.
 -/
 
-namespace HadamardBFormal
+namespace HadamardBFormalCore
 
 open scoped BigOperators Matrix
 
@@ -152,4 +152,4 @@ def cosetSum {G Gbar : Type*} [Fintype G] [DecidableEq Gbar] (κ : G → Gbar) (
     (c : Gbar) : ℤ :=
   ∑ g with κ g = c, x g
 
-end HadamardBFormal
+end HadamardBFormalCore

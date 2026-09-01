@@ -1,8 +1,7 @@
 name = "HadamardBFormal"
 version = "0.1.0"
 keywords = ["mathematics", "combinatorics", "hadamard-matrices", "palomar"]
-# packaging stage adds Challenge/Solution/Test
-defaultTargets = ["HadamardBFormal"]
+defaultTargets = ["HadamardBFormal", "Challenge", "Solution", "Test"]
 
 [leanOptions]
 pp.unicode.fun = true
@@ -19,3 +18,15 @@ rev = "v4.33.0"
 [[lean_lib]]
 name = "HadamardBFormal"
 moreLeanArgs = ["-j", "1"]
+
+[[lean_lib]]
+name = "Challenge"
+roots = ["Challenge"]
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]
+
+[[lean_lib]]
+name = "Test"
+roots = ["Test.AxiomAudit"]
