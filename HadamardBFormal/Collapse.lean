@@ -27,12 +27,13 @@ import HadamardBFormal.TheoremD
   `δ_q(ψ x) = r_q(x)`: see `dvec_seedTwist_of_eps_one` and the corollary
   `theoremD_transport_eps_one`.
 
-* `collapse_seedProblem_bijection` — §1.6, item (a).  The twist `x ↦ ψ x` is an
+* `collapse_seedProblem_bijection` — the seed-problem bijection clause of
+  §1.6's Corollary.  The twist `x ↦ ψ x` is an
   involution of sign-valued quadruples carrying the `i = 1` seed problem
   (`Σ PAF(t) = −4` off the origin) onto the `i = 2` seed problem (the house
   profile at `s = 1`).  The two seed problems are one problem.
 
-**Not formalized here** (future work, `NOTE-B` §1.6 items (b) and (c)): when the
+**Not formalized here** (future work — the rest of `NOTE-B` §1.6's Corollary): when the
 index-two subgroup `K` is *unique* it is characteristic, so `ψ ∘ α = ψ` for every
 `α ∈ Aut G` and the bijection commutes with every multiplier subgroup.  That
 upgrade is group-theoretic API archaeology (`Subgroup.index_eq_two_iff`,
@@ -350,7 +351,8 @@ theorem theoremD_transport_eps_one {G : Type*} [Fintype G] [AddCommGroup G] [Dec
 
 /-! ### The index-two collapse -/
 
-/-- **The index-two collapse, seed-problem bijection** (`NOTE-B` §1.6, item (a)).
+/-- **The index-two collapse, seed-problem bijection** (`NOTE-B` §1.6,
+Corollary — the seed-problem bijection clause).
 
 The character twist `x ↦ ψ x` with `ψ(g) = (−1)^{κ g}` is
 
@@ -365,7 +367,7 @@ side transports to the other.
 
 The bijection is of **seed problems, not of matrices**: it does not say the
 assembled Hadamard matrices are equivalent (`NOTE-B` §3.4 proves they are not, at
-order 668).  The `Aut G`-equivariance upgrade of `NOTE-B` §1.6 (items (b), (c)) is
+order 668).  The `Aut G`-equivariance upgrade of `NOTE-B` §1.6 is
 future work; see this file's module docstring. -/
 theorem collapse_seedProblem_bijection {G : Type*} [AddCommGroup G] [Fintype G]
     (κ : G →+ ZMod 2) (x : Fin 4 → G → ℤ) :

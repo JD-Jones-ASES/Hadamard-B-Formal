@@ -53,7 +53,7 @@ sources:
     id: "https://github.com/JD-Jones-ASES/Hadamard-B/tree/d460202cbc1f30e3a48c28fad916cac00d87cf30"
     type: "other"
     location: >-
-      note/NOTE-B.md sections 1.1-1.6 and 2.2; data/h52-gate.json (SHA-256
+      note/NOTE-B.md sections 1.0-1.6 and 2.2; data/h52-gate.json (SHA-256
       ef60c4ff9f245eec5ba7f035e5968152836207fcd9235a0b1851150d2fb1d170) and
       data/h20-boundary.json (SHA-256
       716610543b79ab9e1c9f1adb142c114544e70e58d370500130b83c17a18cf254)
@@ -171,9 +171,9 @@ related_formalizations:
   - id: "Arthur742Ramos/hadamard-668-lean (GitHub, created 2026-08-28; Palomar entry PALOMAR-2026-08-29-000009)"
     relationship: "other"
     note: >-
-      A Lean formalization that verifies one supplied Hadamard matrix of order
-      668 from the same public data. It states no general construction
-      theorem. As the source note puts it, neither of the two public order-668
+      A Lean formalization (Ramos-Hulak-de Queiroz) that verifies one supplied
+      Hadamard matrix of order 668 from the same public data. It states no
+      general construction theorem. As the source note puts it, neither of the two public order-668
       formalizations states the general construction theorem or the
       classification, so a formalised Theorem A/B is a distinct object (NOTE-B
       section 4.3).
@@ -196,17 +196,18 @@ status:
     off (they need positive semidefiniteness and rank over the reals and
     character orthogonality over the complexes; only D5 and D6 are in scope);
     clause (D-a') of Theorem D, the collapse of the degenerate M = 4J branch;
-    the automorphism-equivariance upgrade of the index-2 collapse (NOTE-B
-    section 1.6, items (b) and (c)); the section-3 separation theorem at order
-    668 and its invariants, whose exact 4-profiles are categorically outside
-    kernel reach; and the 768-squared census of (D-e), which is a Python
-    certificate in the source repository and is labelled MEASURED there, not a
-    theorem here. Every statement is for the note's standard orientation only:
+    the characteristic-subgroup and automorphism-equivariance clauses of the
+    index-2 collapse corollary (NOTE-B section 1.6); the section-3 separation
+    theorem at order 668 and its invariants, whose exact 4-profiles are
+    categorically outside kernel reach; and the 768-squared census of (D-e),
+    which is a Python certificate in the source repository (its cert 10,
+    labelled PROVEN-BY-CERTIFICATE there), not a theorem here. Every statement is for the note's standard orientation only:
     the companion order-20 instance T2 declares the transpose-negated
     orientation and the exporter refuses to emit it. The quotient G/K is
     modelled as a surjective additive hom rather than as a quotient type.
     Deliberate proof holes occur only in Challenge.lean and are excluded from
-    the solution axiom audit.
+    the solution axiom audit; the sorry_count fields count the solution side
+    (Solution.lean and the proof library), where the count is zero.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms:
@@ -381,7 +382,16 @@ fidelity:
     border-equation form E1 Q1-transpose + P1 Lambda(r)-transpose = 0.
     deltaSqSum_eq_four is proved without surjectivity of kappa, which the
     note's Parseval phrasing assumes. D5 likewise uses only the size of the
-    fiber over zero.
+    fiber over zero. Several statements drop hypotheses the note's ambient
+    setting carries, always in the strengthening direction: D5 and D6 do not
+    assume w > 2s; lemmaT does not assume the character's kernel has index 2;
+    theoremD_rowTable does not assume Q sign-valued (the pair-negation
+    hypothesis suffices); and the section-1.5 statements other than
+    theoremD_rowTable do not assume n >= 4, so theoremD_transport also covers
+    the w = 1 case the note excludes as vacuous. Surjectivity of kappa in fact
+    follows from the constant-fiber-size hypothesis (the fiber over zero is
+    nonempty, so w >= 1, so every fiber is nonempty); theoremA states it
+    explicitly for readability, and theoremA_sufficiency omits it.
 
 review:
   status: "self-assessed"
@@ -414,9 +424,9 @@ alignment:
       module: "Solution"
       status: "proved"
       note: >-
-        Stated separately because surjectivity of kappa is not used: only the
-        constancy of the fiber size enters. This is the direction the two
-        instance records consume.
+        Stated with the surjectivity hypothesis omitted; it follows from the
+        constant-fiber-size hypothesis in any case. This is the direction the
+        two instance records consume.
     - source: "NOTE-B section 1.2, Theorem B"
       lean: "HadamardBFormal.theoremB_profile"
       module: "Solution"
@@ -514,7 +524,7 @@ alignment:
         Doubling an index-1 border and twisting the seeds gives a valid index-2
         instance, under the note's condition d = r, which is carried here as an
         explicit hypothesis and is automatic in the epsilon = +1 branch.
-    - source: "NOTE-B section 1.6, Corollary, item (a)"
+    - source: "NOTE-B section 1.6, Corollary (the seed-problem bijection clause)"
       lean: "HadamardBFormal.collapse_seedProblem_bijection"
       module: "Solution"
       status: "proved"

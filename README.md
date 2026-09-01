@@ -21,7 +21,8 @@ Registration pending; this section is completed at registration.
   matrix of order `N = 4(|G| + s)` **if and only if** (H1) `Q Qᵀ = I₄ ⊗ M` for
   some `M : Ḡ → ℤ`, (H2) `Σ PAF(t) = −M(κ t)` off the origin, (H3)
   `E Eᵀ + w · P Pᵀ = N · I`, and (H4) `E Qᵀ + P Ĉᵀ = 0` against the compressed
-  core. The sufficiency half is stated separately, without surjectivity.
+  core. The sufficiency half is stated separately, with the surjectivity
+  hypothesis omitted (it follows from the constant-fiber-size hypothesis).
 - **Theorem B**: for the house Gram table, (H2) *is* the two-tier
   autocorrelation profile `4n·δ₀ − 4s·[t ∈ K∖0] + 4·[t ∉ K]`.
 - The two classical degenerations, each at an **arbitrary** reflection shift
@@ -104,7 +105,8 @@ both built from the data posted publicly on 2026-08-12:
 `Paul-Lez/hadamard-668-comparator` (Palomar entry PALOMAR-2026-08-17-000002),
 whose `Challenge.lean` independently exhibits the bordered structure at that
 order — circulants on `Fin 166`, a width-4 border, per-block-constant strips,
-the same `4 × 4` corner — and `Arthur742Ramos/hadamard-668-lean` (Palomar entry
+the same `4 × 4` corner — and `Arthur742Ramos/hadamard-668-lean`
+(Ramos–Hulak–de Queiroz; Palomar entry
 PALOMAR-2026-08-29-000009), which verifies one supplied matrix. Neither states
 the general construction theorem or the classification; that is the sense in
 which this repository is a distinct object, and the observation is the source
@@ -147,7 +149,7 @@ repeats those statements and connects them to the completed development under
 ## Sources and provenance
 
 - `Hadamard-B@d460202cbc1f30e3a48c28fad916cac00d87cf30`, `note/NOTE-B.md`
-  §§1.1--1.6 and §2.2, is the source for every statement formalized here and
+  §§1.0--1.6 and §2.2, is the source for every statement formalized here and
   for the two pinned instance records.
 - The classical spine is credited in NOTE-B §4.1 from firsthand reads: the
   four-block array is Goethals--Seidel (1970); the general-abelian setting and

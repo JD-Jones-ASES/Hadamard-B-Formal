@@ -550,8 +550,9 @@ theorem theoremD_transport {G : Type*} [Fintype G] [AddCommGroup G] [DecidableEq
 
 /-! ## The index-two collapse (`NOTE-B` §1.6) -/
 
-/-- **The index-two collapse, seed-problem bijection** (`NOTE-B` §1.6, item
-(a)).
+/-- **The index-two collapse, seed-problem bijection** (`NOTE-B` §1.6,
+Corollary — the seed-problem bijection clause; the characteristic-subgroup
+and automorphism-equivariance clauses are not formalized).
 
 The character twist `x ↦ ψ x` with `ψ(g) = (−1)^{κ g}` is
 

@@ -92,7 +92,7 @@ kernel reach and are Hadamard-B's certificates, not theorems here.
 ## Credit for external mathematics and data
 
 - `Hadamard-B@d460202cbc1f30e3a48c28fad916cac00d87cf30`, `note/NOTE-B.md`
-  §§1.1–1.6 and §2.2, supplies every statement formalized here and the two
+  §§1.0–1.6 and §2.2, supplies every statement formalized here and the two
   instance records.
 - The full credit chain, with the sources read firsthand and the one bounded
   novelty statement, is `note/NOTE-B.md` §4. In brief: the four-block array is
