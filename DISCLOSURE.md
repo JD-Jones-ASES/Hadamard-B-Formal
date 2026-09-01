@@ -106,8 +106,11 @@ the twenty-six deliberate holes in `Challenge.lean`, one per compared theorem,
 which is what Palomar's Comparator expects. `scripts/verify.py` runs the whole
 set and additionally checks that the theorem and definition lists in
 `comparator.json`, `Test/AxiomAudit.lean`, `Challenge.lean`, `Solution.lean` and
-`formalization.yaml` are set-equal, so those five lists cannot drift apart
-silently.
+`formalization.yaml` are set-equal, and that every compared theorem's fully
+elaborated type prints byte-identically from `Challenge` and from `Solution`
+— name-level agreement alone cannot see an instance-path divergence between
+the two modules' import closures, and the first Palomar submission failed on
+exactly that.
 
 **Local versus protected.** The local build, the transitive axiom audit, the
 exporter check and the assembly cross-check have been run and pass. A successful

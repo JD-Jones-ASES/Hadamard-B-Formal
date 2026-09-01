@@ -15,7 +15,13 @@ Standard library only.  Runs, in order:
    holes in `Challenge.lean` as there are compared theorems;
 5. a set-equality check over the six hand-maintained lists that must agree:
    `comparator.json`, `Test/AxiomAudit.lean`, `Challenge.lean`, `Solution.lean`,
-   and `formalization.yaml`'s `main_results` and `alignment.statements`.
+   and `formalization.yaml`'s `main_results` and `alignment.statements`;
+6. a statement-parity check: every compared theorem's fully elaborated type
+   (`pp.all`) is printed from `Challenge` and from `Solution` and the two
+   dumps must be byte-identical.  Name-level set-equality cannot see this;
+   the first submission failed exactly here, because a smaller import
+   closure in `Solution.lean` resolved `ZMod 2`'s algebra through a
+   different instance path than `Challenge.lean`'s full-Mathlib closure.
 
 NOTE: Palomar Comparator, `lean4export`, and NanoDa are NOT run here and are not
 installed on this machine.  They run only in Palomar's protected environment,
@@ -253,6 +259,54 @@ def set_equality(report: Report) -> int:
     return len(set(lists["comparator.json theorem_names"]))
 
 
+def statement_parity(report: Report) -> None:
+    print("\nStep 6: statement parity (pp.all elaborated types, Challenge vs Solution)")
+    comparator = json.loads((ROOT / "comparator.json").read_text(encoding="utf-8"))
+    names = comparator["theorem_names"]
+    dumps: dict[str, str] = {}
+    env = {k: v for k, v in os.environ.items() if k in ENV_KEEP}
+    for module in ("Challenge", "Solution"):
+        source = "\n".join(
+            [f"import {module}", "set_option pp.all true",
+             "set_option maxHeartbeats 1000000"]
+            + [f"#check @{name}" for name in names]) + "\n"
+        probe = ROOT / f".parity_{module}.lean"
+        probe.write_text(source, encoding="utf-8")
+        try:
+            proc = subprocess.run(
+                ["lake", "env", "lean", str(probe)], cwd=ROOT, env=env,
+                capture_output=True, encoding="utf-8", errors="replace")
+        finally:
+            probe.unlink(missing_ok=True)
+        ok = proc.returncode == 0
+        report.check(ok, f"pp.all dump of {module} elaborates",
+                     (proc.stderr or proc.stdout or "")[-400:])
+        dumps[module] = (proc.stdout or "") + (proc.stderr or "")
+    identical = dumps["Challenge"] == dumps["Solution"]
+    detail = ""
+    if not identical:
+        marker = re.compile(r"^@?" + NAMESPACE + r"\.[\w']+", re.M)
+        for name in names:
+            spans = []
+            for module in ("Challenge", "Solution"):
+                text = dumps[module]
+                starts = [m for m in marker.finditer(text)
+                          if m.group(0).lstrip("@").startswith(f"{NAMESPACE}.")]
+                block = ""
+                for i, m in enumerate(starts):
+                    if m.group(0).lstrip("@").split(".{")[0] == name:
+                        end = starts[i + 1].start() if i + 1 < len(starts) else len(text)
+                        block = text[m.start():end]
+                        break
+                spans.append(block)
+            if spans[0] != spans[1]:
+                detail += f"{name} differs; "
+        detail = detail or "dumps differ outside recognised blocks"
+    report.check(identical,
+                 f"all {len(names)} elaborated statements byte-identical "
+                 "between Challenge and Solution", detail)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument(
@@ -288,6 +342,7 @@ def main() -> int:
 
     compared = set_equality(report)
     forbidden_tokens(report, compared)
+    statement_parity(report)
 
     print("\nNOTE: Palomar Comparator, lean4export, and NanoDa were NOT run here.")
     print("      They run only in Palomar's protected environment.  A successful")
@@ -302,7 +357,7 @@ def main() -> int:
               + "; ".join(report.failures))
         return 1
     print("\nVERIFY: PASS -- build, axiom audit, exporter, cross-check, "
-          "token scan, and list set-equality all green.")
+          "token scan, list set-equality, and statement parity all green.")
     return 0
 
 

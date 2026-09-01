@@ -1,3 +1,4 @@
+import Mathlib
 import HadamardBFormal
 
 /-!
@@ -6,6 +7,12 @@ import HadamardBFormal
 This module exposes exactly the public challenge statements under the Palomar
 namespace and discharges them through the internal, provenance-tracked
 formalization in `HadamardBFormal/`.
+
+`Mathlib` is imported in full so that this module elaborates every statement
+in the same instance environment as `Challenge.lean` (which imports only
+`Mathlib`): with a smaller import closure, `ZMod 2`'s algebraic structure
+resolves through a different instance path and the elaborated statement
+types diverge from the challenge's, which Palomar's Comparator rejects.
 -/
 
 namespace HadamardBFormal

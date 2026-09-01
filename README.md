@@ -27,9 +27,11 @@ rather than a theorem here.
 Registration pending; this section is completed at registration.
 
 The local Lean build and the transitive axiom audit pass, the exporter
-reproduces the committed data byte for byte, and the assembly cross-check
-reproduces both source digests — `python -B scripts/verify.py` runs all four
-and is the entrypoint. A successful Palomar protected run **would additionally**
+reproduces the committed data byte for byte, the assembly cross-check
+reproduces both source digests, and every compared theorem's fully
+elaborated type is byte-identical between `Challenge` and `Solution`
+(the statement-parity check) — `python -B scripts/verify.py` runs the
+whole set and is the entrypoint. A successful Palomar protected run **would additionally**
 establish agreement between the recorded Challenge and the recorded Solution
 through Comparator, and replay of the exported proof through Lean's kernel and
 the pinned NanoDa kernel. No Comparator, `lean4export`, or NanoDa tooling has
