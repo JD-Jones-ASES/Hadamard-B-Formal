@@ -24,21 +24,27 @@ rather than a theorem here.
 
 ## Registry
 
-Registration pending; this section is completed at registration.
+Registered in the Palomar Registry as
+[PALOMAR-2026-09-01-000006](https://palomar-registry.org/entry?id=PALOMAR-2026-09-01-000006&version=1)
+(version 1, 2026-09-01), pinned to commit
+`d99c0180872e4213e54272f9699d28f28032a2a3`. The registration records that
+the twenty-six public theorems matched this repository's Mathlib-only
+challenge surface and that their proofs replayed in Lean's kernel and in
+Palomar's pinned independent NanoDa kernel at that commit (mechanical
+verification completed 2026-09-01T11:38:15Z; axioms `propext`,
+`Classical.choice`, `Quot.sound`; MIT declared and detected). It certifies
+proof replay and statement fidelity to the recorded challenge — not
+fidelity to the informal source, novelty, interest, or peer review, which
+remain editorial questions. Later commits here do not alter that entry,
+which stays pinned to the registered commit.
 
-The local Lean build and the transitive axiom audit pass, the exporter
-reproduces the committed data byte for byte, the assembly cross-check
-reproduces both source digests, and every compared theorem's fully
-elaborated type is byte-identical between `Challenge` and `Solution`
-(the statement-parity check) — `python -B scripts/verify.py` runs the
-whole set and is the entrypoint. A successful Palomar protected run **would additionally**
-establish agreement between the recorded Challenge and the recorded Solution
-through Comparator, and replay of the exported proof through Lean's kernel and
-the pinned NanoDa kernel. No Comparator, `lean4export`, or NanoDa tooling has
-been run against this repository; none is installed on the machine that built
-it. And none of those checks — local or protected — establishes fidelity to the
-informal source, novelty, interest, or peer review; those are editorial
-questions.
+The local check set — Lean build, transitive axiom audit, exporter
+determinism, assembly cross-check, and the statement-parity check
+(every compared theorem's fully elaborated type byte-identical between
+`Challenge` and `Solution`) — is `python -B scripts/verify.py`, and it
+gates every commit here. The first submission failed Palomar's Comparator
+exactly where the parity check now looks; the registered commit carries
+the fix and the gate.
 
 ### Why one entry
 

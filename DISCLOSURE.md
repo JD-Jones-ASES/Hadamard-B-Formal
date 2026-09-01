@@ -113,14 +113,15 @@ the two modules' import closures, and the first Palomar submission failed on
 exactly that.
 
 **Local versus protected.** The local build, the transitive axiom audit, the
-exporter check and the assembly cross-check have been run and pass. A successful
-Palomar protected run **would additionally** establish agreement between the
-recorded Challenge and the recorded Solution through Comparator, and replay of
-the exported proof through Lean's kernel and the pinned NanoDa kernel. Neither
-that run nor anything above establishes fidelity to the informal source,
-novelty, interest, or peer review. No Comparator, `lean4export` or NanoDa
-tooling has been run against this repository, and none is installed on the
-machine that built it.
+exporter check, the assembly cross-check and the statement-parity check have
+been run and pass. Palomar's protected run completed for the registered
+commit `d99c018…` on 2026-09-01 (entry PALOMAR-2026-09-01-000006): Comparator
+agreement between the recorded Challenge and the recorded Solution, and
+replay of the exported proof through Lean's kernel and the pinned NanoDa
+kernel. Neither that run nor anything above establishes fidelity to the
+informal source, novelty, interest, or peer review. No Comparator,
+`lean4export` or NanoDa tooling is installed on the machine that built this
+repository; commits after the registered one carry only the local checks.
 
 **Statement fidelity.** Comparator matching, when it runs, will show that the
 solved statements are the challenge statements; it will not show that either is

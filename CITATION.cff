@@ -40,6 +40,10 @@ abstract: >-
 type: software
 version: 0.1.0
 date-released: 2026-09-01
+identifiers:
+  - type: other
+    value: "PALOMAR-2026-09-01-000006"
+    description: "Palomar Registry entry (version 1, 2026-09-01), pinned to commit d99c0180872e4213e54272f9699d28f28032a2a3"
 url: "https://github.com/JD-Jones-ASES/Hadamard-B-Formal"
 repository-code: "https://github.com/JD-Jones-ASES/Hadamard-B-Formal"
 authors:
