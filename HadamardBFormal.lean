@@ -3,5 +3,6 @@ import HadamardBFormal.Develop
 import HadamardBFormal.GS
 import HadamardBFormal.Border
 import HadamardBFormal.Compression
+import HadamardBFormal.TheoremA
 import HadamardBFormal.House
 import HadamardBFormal.Twist

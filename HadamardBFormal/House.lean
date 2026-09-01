@@ -31,6 +31,21 @@ the general Lemma 3 in `Compression.lean`.
 `borderedGS_subsingleton` is now a corollary of `theoremA_sufficiency`
 (`Compression.lean`): a trivial quotient has one fiber, of size `|G|`, and the
 Gram table `M` is the constant `4s`.
+
+The file also carries the **house form itself** (`NOTE-B` §1.2) and the two rows
+of `NOTE-B` §1.3 that are one summation away from it:
+
+* `houseM` — the table `M = (4s+4)·I_i − 4·J_i`, written as a `Ḡ`-invariant
+  function `ē ↦ if ē = 0 then 4s else −4`;
+* `theoremB_profile` — **Theorem B**: (H2) for the house table is exactly the
+  two-tier PAF profile `4n·δ₀ − 4s·[t ∈ K∖0] + 4·[t ∉ K]`;
+* `D5` — `Σ_q r_q² = 8n − 4w(s+1) + 4s`, obtained by summing the profile over
+  `G` (the `t = 0` term is `4n` by the sign condition alone);
+* `D6` — at index one, non-negativity of `D5` gives `n(s−1) ≤ s`.
+
+`D5` and `D6` are the only rows of Theorem C in formal scope; `D1`--`D4` and the
+classification corollary are deliberately out of scope (they need positive
+semidefiniteness, rank over `ℝ`, and character orthogonality over `ℂ`).
 -/
 
 namespace HadamardBFormal
@@ -204,5 +219,177 @@ theorem borderedGS_index_one {G Gbar : Type*} [AddCommGroup G] [Fintype G] [Deci
   · simpa using h1 a b
   · simpa using h2 t ht
   · simpa [H3] using h3
+
+/-! ### The house Gram table -/
+
+/-- The house Gram table `M = (4s+4)·I_i − 4·J_i` of `NOTE-B` §1.2, written as a
+`Ḡ`-invariant function: `M(0) = 4s` — forced by the ansatz, see `M_zero_of_H1` —
+and `M(ē) = −4` for every nonzero class. -/
+def houseM {Gbar : Type*} [Zero Gbar] [DecidableEq Gbar] (s : ℕ) : Gbar → ℤ :=
+  fun e => if e = 0 then 4 * (s : ℤ) else -4
+
+@[simp]
+theorem houseM_zero {Gbar : Type*} [Zero Gbar] [DecidableEq Gbar] (s : ℕ) :
+    houseM (Gbar := Gbar) s 0 = 4 * (s : ℤ) :=
+  if_pos rfl
+
+theorem houseM_of_ne {Gbar : Type*} [Zero Gbar] [DecidableEq Gbar] (s : ℕ) {e : Gbar}
+    (he : e ≠ 0) : houseM s e = -4 :=
+  if_neg he
+
+/-! ### Theorem B -/
+
+/-- **Theorem B** (`NOTE-B` §1.2).  For the house Gram table, hypothesis (H2) of
+Theorem A is exactly the **two-tier PAF profile**
+
+```
+Σ_q PAF_q(t) = 4n·δ₀ − 4s·[t ∈ K∖{0}] + 4·[t ∉ K].
+```
+
+The sign condition on the seeds is used in one direction only: (H2) constrains
+`t ≠ 0`, and the value `Σ PAF(0) = 4n` of the displayed profile at the origin is
+supplied by `sumPaf_zero`, i.e. by sign-valuedness alone. -/
+theorem theoremB_profile {G Gbar : Type*} [Fintype G] [AddCommGroup G] [DecidableEq G]
+    [AddCommGroup Gbar] [DecidableEq Gbar] (x : Fin 4 → G → ℤ) (hx : ∀ q g, IsSign (x q g))
+    (κ : G →+ Gbar) (s : ℕ) :
+    H2 x κ (houseM s) ↔
+      ∀ t : G, sumPaf x t
+        = 4 * (Fintype.card G : ℤ) * (if t = 0 then 1 else 0)
+          - 4 * (s : ℤ) * (if t ≠ 0 ∧ κ t = 0 then 1 else 0)
+          + 4 * (if κ t ≠ 0 then 1 else 0) := by
+  have hRHS : ∀ t : G,
+      4 * (Fintype.card G : ℤ) * (if t = 0 then 1 else 0)
+        - 4 * (s : ℤ) * (if t ≠ 0 ∧ κ t = 0 then 1 else 0)
+        + 4 * (if κ t ≠ 0 then 1 else 0)
+      = if t = 0 then 4 * (Fintype.card G : ℤ) else -houseM s (κ t) := by
+    intro t
+    by_cases ht : t = 0
+    · subst ht
+      simp
+    · by_cases hkt : κ t = 0
+      · rw [hkt, houseM_zero]
+        simp [ht]
+      · rw [houseM_of_ne s hkt]
+        simp [ht, hkt]
+  constructor
+  · intro h2 t
+    rw [hRHS t]
+    by_cases ht : t = 0
+    · subst ht
+      rw [if_pos rfl]
+      exact sumPaf_zero hx
+    · rw [if_neg ht]
+      exact h2 t ht
+  · intro hprof t ht
+    have h := hprof t
+    rw [hRHS t, if_neg ht] at h
+    exact h
+
+/-! ### D5 and D6 -/
+
+/-- The total mass of a periodic autocorrelation is the square of the row sum:
+`Σ_t PAF_x(t) = (Σ_g x g)²`. -/
+theorem sum_paf_eq_sq {G : Type*} [Fintype G] [AddCommGroup G] (x : G → ℤ) :
+    (∑ t, paf x t) = (∑ g, x g) ^ 2 := by
+  have hstep : ∀ u : G, (∑ t : G, x (u + t)) = ∑ k : G, x k := fun u =>
+    Fintype.sum_equiv (Equiv.addLeft u) (fun t => x (u + t)) x fun _ => rfl
+  calc (∑ t, paf x t) = ∑ t : G, ∑ u : G, x u * x (u + t) := rfl
+    _ = ∑ u : G, ∑ t : G, x u * x (u + t) := Finset.sum_comm
+    _ = ∑ u : G, x u * ∑ t : G, x (u + t) :=
+        Finset.sum_congr rfl fun u _ => (Finset.mul_sum _ _ _).symm
+    _ = ∑ u : G, x u * ∑ k : G, x k :=
+        Finset.sum_congr rfl fun u _ => by rw [hstep u]
+    _ = (∑ g, x g) ^ 2 := by rw [← Finset.sum_mul, sq]
+
+/-- The total mass of the aggregate profile is the second moment of the row sums:
+`Σ_t Σ PAF(t) = Σ_q r_q²`. -/
+theorem sum_sumPaf_eq_sq {G : Type*} [Fintype G] [AddCommGroup G] (x : Fin 4 → G → ℤ) :
+    (∑ t, sumPaf x t) = ∑ q, (∑ g, x q g) ^ 2 := by
+  calc (∑ t, sumPaf x t) = ∑ t : G, ∑ q : Fin 4, paf (x q) t := rfl
+    _ = ∑ q : Fin 4, ∑ t : G, paf (x q) t := Finset.sum_comm
+    _ = ∑ q, (∑ g, x q g) ^ 2 := Finset.sum_congr rfl fun q _ => sum_paf_eq_sq (x q)
+
+/-- **D5** (`NOTE-B` §1.3).  Summing the house profile over the whole group gives
+the second moment of the row sums:
+
+```
+Σ_q r_q² = 4n − 4s(w−1) + 4(n−w) = 8n − 4w(s+1) + 4s.
+```
+
+Only the fiber over `0` — i.e. `|K| = w` — enters; neither surjectivity of `κ`
+nor the index is used. -/
+theorem D5 {G Gbar : Type*} [Fintype G] [AddCommGroup G]
+    [AddCommGroup Gbar] [DecidableEq Gbar] {s w : ℕ} (κ : G →+ Gbar)
+    (hw : ∀ c : Gbar, (Finset.univ.filter fun g : G => κ g = c).card = w)
+    (x : Fin 4 → G → ℤ) (hx : ∀ q g, IsSign (x q g)) (h2 : H2 x κ (houseM s)) :
+    (∑ q, (∑ g, x q g) ^ 2)
+      = 8 * (Fintype.card G : ℤ) - 4 * (w : ℤ) * ((s : ℤ) + 1) + 4 * (s : ℤ) := by
+  classical
+  have hker : (Finset.univ.filter fun g : G => κ g = 0).card = w := hw 0
+  -- The profile, written so that the three tiers are three indicator functions.
+  have hdecomp : ∀ t : G, sumPaf x t
+      = 4 * (if κ t = 0 then (0 : ℤ) else 1)
+        + (-4 * (s : ℤ)) * (if κ t = 0 then (1 : ℤ) else 0)
+        + (4 * (Fintype.card G : ℤ) + 4 * (s : ℤ)) * (if t = 0 then (1 : ℤ) else 0) := by
+    intro t
+    by_cases ht : t = 0
+    · subst ht
+      rw [sumPaf_zero hx, map_zero]
+      simp
+    · by_cases hkt : κ t = 0
+      · rw [h2 t ht, hkt, houseM_zero]
+        simp [ht]
+      · rw [h2 t ht, houseM_of_ne s hkt]
+        simp [ht, hkt]
+  have hstep : (∑ t : G, sumPaf x t)
+      = ∑ t : G, (4 * (if κ t = 0 then (0 : ℤ) else 1)
+        + (-4 * (s : ℤ)) * (if κ t = 0 then (1 : ℤ) else 0)
+        + (4 * (Fintype.card G : ℤ) + 4 * (s : ℤ)) * (if t = 0 then (1 : ℤ) else 0)) :=
+    Finset.sum_congr rfl fun t _ => hdecomp t
+  have hsum1 : (∑ t : G, (if κ t = 0 then (1 : ℤ) else 0)) = (w : ℤ) := by
+    rw [Finset.sum_boole, hker]
+  have hsum0 : (∑ t : G, (if κ t = 0 then (0 : ℤ) else 1))
+      = (Fintype.card G : ℤ) - (w : ℤ) := by
+    have hflip : ∀ t : G,
+        (if κ t = 0 then (0 : ℤ) else 1) = 1 - (if κ t = 0 then (1 : ℤ) else 0) := by
+      intro t
+      by_cases h : κ t = 0 <;> simp [h]
+    rw [Finset.sum_congr rfl fun t (_ : t ∈ Finset.univ) => hflip t, Finset.sum_sub_distrib,
+      hsum1, Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one]
+  have hsumd : (∑ t : G, (if t = 0 then (1 : ℤ) else 0)) = 1 := by
+    simp
+  rw [← sum_sumPaf_eq_sq, hstep, Finset.sum_add_distrib, Finset.sum_add_distrib,
+    ← Finset.mul_sum, ← Finset.mul_sum, ← Finset.mul_sum, hsum0, hsum1, hsumd]
+  ring
+
+/-- **D6** (`NOTE-B` §1.3).  At index one the whole group is the kernel, so `D5`
+reads `Σ_q r_q² = 4(n − ns + s)`; non-negativity of a sum of squares gives
+
+```
+n(s − 1) ≤ s.
+```
+
+For `n ≥ 3` this kills `i = 1` for every `s ≥ 2` — but that reading is prose;
+what is formalized is the inequality. -/
+theorem D6 {G Gbar : Type*} [Fintype G] [AddCommGroup G]
+    [AddCommGroup Gbar] [DecidableEq Gbar] [Subsingleton Gbar] {s : ℕ} (κ : G →+ Gbar)
+    (x : Fin 4 → G → ℤ) (hx : ∀ q g, IsSign (x q g)) (h2 : H2 x κ (houseM s)) :
+    (Fintype.card G : ℤ) * ((s : ℤ) - 1) ≤ (s : ℤ) := by
+  have hw : ∀ c : Gbar, (Finset.univ.filter fun g : G => κ g = c).card = Fintype.card G := by
+    intro c
+    rw [Finset.filter_true_of_mem fun g _ => Subsingleton.elim (κ g) c, Finset.card_univ]
+  have hnn : (0 : ℤ) ≤ ∑ q, (∑ g, x q g) ^ 2 :=
+    Finset.sum_nonneg fun q _ => sq_nonneg _
+  rw [D5 κ hw x hx h2] at hnn
+  -- The only nonlinear term is `n·s`; naming it makes the rest linear.
+  obtain ⟨A, hA⟩ : ∃ A : ℤ, (Fintype.card G : ℤ) * (s : ℤ) = A := ⟨_, rfl⟩
+  have hlin : 8 * (Fintype.card G : ℤ) - 4 * (Fintype.card G : ℤ) * ((s : ℤ) + 1) + 4 * (s : ℤ)
+      = 4 * (Fintype.card G : ℤ) - 4 * A + 4 * (s : ℤ) := by
+    rw [← hA]; ring
+  have hgoal : (Fintype.card G : ℤ) * ((s : ℤ) - 1) = A - (Fintype.card G : ℤ) := by
+    rw [← hA]; ring
+  rw [hlin] at hnn
+  rw [hgoal]
+  omega
 
 end HadamardBFormal
