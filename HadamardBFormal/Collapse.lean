@@ -3,6 +3,7 @@ Copyright (c) 2026 JD Jones. All rights reserved.
 Released under MIT license as described in the file LICENSE.
 Authors: Claude (Anthropic)
 -/
+import HadamardBFormal.TheoremA
 import HadamardBFormal.TheoremD
 
 /-!
@@ -348,6 +349,138 @@ theorem theoremD_transport_eps_one {G : Type*} [Fintype G] [AddCommGroup G] [Dec
     Matrix.IsHadamard (border κ E₁ (doubleRow P₁) (doubleCol Q₁) (seedTwist κ x) ρ) :=
   theoremD_transport κ hw E₁ P₁ Q₁ x ρ hE hP hQ hx hQgram hprofile h3 h4
     (dvec_seedTwist_of_eps_one κ x hρ)
+
+/-! ### The converse of the transport -/
+
+/-- **The converse of the transport clause of (D-e)** (`NOTE-B` §1.5).
+
+The note's transport hypothesis `d = r` is not decoration and not a convenience: it is
+*forced*.  If the doubled tables satisfy (H4) at `i = 2` then, by `theoremD_border`, the
+transported system reads `P₁ Λ(d)ᵀ Q₁ = P₁ Λ(r)ᵀ Q₁`.  Cancelling the two `4 × 4`
+Hadamard factors leaves `Λ(d) = Λ(r)`, and `Λ` is injective.
+
+The cancellation stays in `ℤ`, where the note inverts `P₁` over `ℚ`: `Q₁ Q₁ᵀ = 4·I₄`
+and `P₁ᵀ P₁ = 4·I₄` turn the equation into `16·Λ(d)ᵀ = 16·Λ(r)ᵀ`, and `ℤ` is
+torsion free. -/
+theorem theoremD_transport_converse {G : Type*} [Fintype G] [AddCommGroup G]
+    (κ : G →+ ZMod 2)
+    (E₁ : Matrix (Fin (4 * 1)) (Fin (4 * 1)) ℤ) (P₁ Q₁ : Matrix (Fin 4) (Fin 4) ℤ)
+    (x : Fin 4 → G → ℤ) (ρ : G)
+    (hP : ∀ r J, IsSign (P₁ r J)) (hQ : ∀ I c, IsSign (Q₁ I c))
+    (hPgram : P₁ * P₁.transpose = (4 : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ))
+    (hQgram : Q₁ * Q₁.transpose = (4 : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ))
+    (h4 : E₁ * Q₁.transpose + P₁ * (Lam (rvec x)).transpose = 0)
+    (h4' : H4 (s := 1) E₁ (doubleRow P₁) (doubleCol Q₁) (chat κ (seedTwist κ x) ρ)) :
+    dvec κ (seedTwist κ x) ρ = rvec x := by
+  have hQhad : Matrix.IsHadamard Q₁ := by
+    refine Matrix.IsHadamard.of_mul_conjTranspose
+      (fun i j => Unitary.mem_iff_eq_one_or_eq_neg_one.mpr (hQ i j)) ?_ ?_
+    · rw [Matrix.conjTranspose_eq_transpose_of_trivial, hQgram]
+      norm_num
+    · rw [isRegular_iff_ne_zero]
+      norm_num
+  have hPhad : Matrix.IsHadamard P₁ := by
+    refine Matrix.IsHadamard.of_mul_conjTranspose
+      (fun i j => Unitary.mem_iff_eq_one_or_eq_neg_one.mpr (hP i j)) ?_ ?_
+    · rw [Matrix.conjTranspose_eq_transpose_of_trivial, hPgram]
+      norm_num
+    · rw [isRegular_iff_ne_zero]
+      norm_num
+  have hUTU : Q₁.transpose * Q₁ = (4 : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ) := by
+    have h := hQhad.conjTranspose_mul
+    rw [Matrix.conjTranspose_eq_transpose_of_trivial] at h
+    simpa using h
+  have hPTP : P₁.transpose * P₁ = (4 : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ) := by
+    have h := hPhad.conjTranspose_mul
+    rw [Matrix.conjTranspose_eq_transpose_of_trivial] at h
+    simpa using h
+  -- The two Hadamard factors cancel over `ℤ`: `4·A = 4·B` and `ℤ` is torsion free.
+  have hcancelQ : ∀ A B : Matrix (Fin 4) (Fin 4) ℤ, A * Q₁ = B * Q₁ → A = B := by
+    intro A B h
+    have h' := congrArg (fun X : Matrix (Fin 4) (Fin 4) ℤ => X * Q₁.transpose) h
+    simp only [Matrix.mul_assoc, hQgram, Matrix.mul_smul, Matrix.mul_one] at h'
+    ext i j
+    have hij := congrFun (congrFun h' i) j
+    simp only [Matrix.smul_apply, smul_eq_mul] at hij
+    omega
+  have hcancelP : ∀ A B : Matrix (Fin 4) (Fin 4) ℤ, P₁ * A = P₁ * B → A = B := by
+    intro A B h
+    have h' := congrArg (fun X : Matrix (Fin 4) (Fin 4) ℤ => P₁.transpose * X) h
+    simp only [← Matrix.mul_assoc, hPTP, Matrix.smul_mul, Matrix.one_mul] at h'
+    ext i j
+    have hij := congrFun (congrFun h' i) j
+    simp only [Matrix.smul_apply, smul_eq_mul] at hij
+    omega
+  have hUeq : (Matrix.of fun I c : Fin 4 => doubleCol Q₁ (I, 0) c) = Q₁ := by
+    ext I c
+    exact doubleCol_zero Q₁ I c
+  have hpeq : (Matrix.of fun r J : Fin 4 => doubleRow P₁ r (J, 0)) = P₁ := by
+    ext r J
+    exact doubleRow_zero P₁ r J
+  -- The `i = 2` border equation, collapsed to `4·E₁ = −P₁ Λ(d)ᵀ Q₁`.
+  have hbord := (theoremD_border κ (seedTwist κ x) ρ E₁ (doubleRow P₁) (doubleCol Q₁)
+    (fun I => by funext c; simp only [Pi.neg_apply, doubleCol_one, doubleCol_zero])
+    (fun r J => by rw [doubleRow_one, doubleRow_zero])
+    (by rw [hUeq]; exact hQhad)).mp h4'
+  rw [hUeq, hpeq] at hbord
+  -- The `i = 1` border equation, multiplied through by `Q₁`.
+  have h4Q : (4 : ℤ) • E₁ = -(P₁ * (Lam (rvec x)).transpose * Q₁) := by
+    have h := congrArg (fun A : Matrix (Fin 4) (Fin 4) ℤ => A * Q₁) h4
+    simp only [Matrix.zero_mul] at h
+    rw [Matrix.add_mul, Matrix.mul_assoc, hUTU, Matrix.mul_smul, Matrix.mul_one] at h
+    rw [eq_neg_iff_add_eq_zero]
+    exact h
+  have hLam : (Lam (dvec κ (seedTwist κ x) ρ)).transpose = (Lam (rvec x)).transpose :=
+    hcancelP _ _ (hcancelQ _ _ (neg_injective (hbord.symm.trans h4Q)))
+  refine Lam_injective ?_
+  have h := congrArg Matrix.transpose hLam
+  simpa using h
+
+/-- **The transport, as the note's "exactly when"** (`NOTE-B` §1.5, (D-e)).
+
+Doubling an `i = 1` border and twisting the seeds produces a valid `i = 2` border
+**if and only if** `d = r`.  `theoremD_transport` is the sufficiency half and
+`theoremD_transport_converse` the necessity half; the `4 × 4` Gram `P₁ P₁ᵀ = 4·I₄` is
+the one hypothesis the sufficiency half does not need. -/
+theorem theoremD_transport_iff {G : Type*} [Fintype G] [AddCommGroup G] [DecidableEq G]
+    {w : ℕ} (κ : G →+ ZMod 2)
+    (hw : ∀ c : ZMod 2, (Finset.univ.filter fun g : G => κ g = c).card = w)
+    (E₁ : Matrix (Fin (4 * 1)) (Fin (4 * 1)) ℤ) (P₁ Q₁ : Matrix (Fin 4) (Fin 4) ℤ)
+    (x : Fin 4 → G → ℤ) (ρ : G)
+    (hE : ∀ r c, IsSign (E₁ r c)) (hP : ∀ r J, IsSign (P₁ r J)) (hQ : ∀ I c, IsSign (Q₁ I c))
+    (hx : ∀ q g, IsSign (x q g))
+    (hPgram : P₁ * P₁.transpose = (4 : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ))
+    (hQgram : Q₁ * Q₁.transpose = (4 : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ))
+    (hprofile : ∀ t : G, t ≠ 0 → sumPaf x t = -4)
+    (h3 : E₁ * E₁.transpose + (Fintype.card G : ℤ) • (P₁ * P₁.transpose)
+      = (4 * ((Fintype.card G : ℤ) + 1)) • 1)
+    (h4 : E₁ * Q₁.transpose + P₁ * (Lam (rvec x)).transpose = 0) :
+    Matrix.IsHadamard (border κ E₁ (doubleRow P₁) (doubleCol Q₁) (seedTwist κ x) ρ) ↔
+      dvec κ (seedTwist κ x) ρ = rvec x := by
+  constructor
+  · intro hH
+    -- Equal nonempty fibers make `κ` surjective, so Theorem A returns (H4) at `i = 2`.
+    have hn : (Fintype.card G : ℤ) = 2 * (w : ℤ) := by
+      have h := sum_comp_of_card_fiber_eq (⇑κ) hw fun _ => (1 : ℤ)
+      rw [zmod2_sum] at h
+      simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one] at h
+      rw [h]
+      ring
+    have hn' : Fintype.card G = 2 * w := by exact_mod_cast hn
+    have hpos : 0 < Fintype.card G := Fintype.card_pos_iff.mpr ⟨(0 : G)⟩
+    have hsurj : Function.Surjective κ := by
+      intro c
+      have hne : (Finset.univ.filter fun g : G => κ g = c).Nonempty := by
+        rw [← Finset.card_pos, hw c]
+        omega
+      obtain ⟨g, hg⟩ := hne
+      exact ⟨g, (Finset.mem_filter.mp hg).2⟩
+    obtain ⟨-, -, h4'⟩ := (theoremA (s := 1) (w := w) κ hsurj hw E₁ (doubleRow P₁)
+      (doubleCol Q₁) (seedTwist κ x) ρ hE (fun r z => doubleRow_isSign hP r z)
+      (fun z c => doubleCol_isSign hQ z c) ((seedTwist_isSign_iff κ x).mp hx)).mp hH
+    exact theoremD_transport_converse κ E₁ P₁ Q₁ x ρ hP hQ hPgram hQgram h4 h4'
+  · intro hd
+    exact theoremD_transport κ hw E₁ P₁ Q₁ x ρ hE hP hQ hx hQgram hprofile h3 h4 hd
 
 /-! ### The index-two collapse -/
 

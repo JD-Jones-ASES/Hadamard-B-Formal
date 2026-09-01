@@ -7,6 +7,7 @@ import HadamardBFormal.TheoremA
 import HadamardBFormal.House
 import HadamardBFormal.Twist
 import HadamardBFormal.TheoremD
+import HadamardBFormal.Degenerate
 import HadamardBFormal.Collapse
 import HadamardBFormal.Data
 import HadamardBFormal.Results
