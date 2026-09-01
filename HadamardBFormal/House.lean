@@ -3,7 +3,7 @@ Copyright (c) 2026 JD Jones. All rights reserved.
 Released under MIT license as described in the file LICENSE.
 Authors: Claude (Anthropic)
 -/
-import HadamardBFormal.Border
+import HadamardBFormal.Compression
 
 /-!
 # The house form and its two classical degenerations
@@ -25,33 +25,17 @@ theorems, and this file proves both.
 At `i = 1` the compression lemma (`NOTE-B` §1.1, Lemma 3) collapses: every
 `K`-coset is all of `G`, so `Σ_h x(h − g)` is just the row sum of `x` and no
 fiber reindexing is needed.  That collapse is `compression_index_one`, proved
-here from the block-level `gsBlock_sum_eq`.
+here from the block-level `gsBlock_sum_eq` — a direct argument, independent of
+the general Lemma 3 in `Compression.lean`.
 
-Also here: `sumPaf_zero`, the note's "at `t = 0` the sum is `4n` automatically".
+`borderedGS_subsingleton` is now a corollary of `theoremA_sufficiency`
+(`Compression.lean`): a trivial quotient has one fiber, of size `|G|`, and the
+Gram table `M` is the constant `4s`.
 -/
 
 namespace HadamardBFormal
 
 open scoped BigOperators Matrix
-
-/-! ### The profile at the origin -/
-
-/-- `PAF_x(0) = |G|` for a sign-valued sequence. -/
-theorem paf_zero {G : Type*} [Fintype G] [AddCommGroup G] {x : G → ℤ}
-    (hx : ∀ g, IsSign (x g)) : paf x 0 = Fintype.card G := by
-  have h : ∀ u : G, x u * x (u + 0) = 1 := by
-    intro u
-    rw [add_zero]
-    rcases hx u with hu | hu <;> rw [hu] <;> norm_num
-  rw [paf, Finset.sum_congr rfl fun u _ => h u]
-  simp
-
-/-- **`Σ PAF(0) = 4n` is automatic** (`NOTE-B` §1.1): the value of the aggregate
-profile at the origin is forced by the sign condition alone. -/
-theorem sumPaf_zero {G : Type*} [Fintype G] [AddCommGroup G] {x : Fin 4 → G → ℤ}
-    (hx : ∀ q g, IsSign (x q g)) : sumPaf x 0 = 4 * (Fintype.card G : ℤ) := by
-  rw [sumPaf, Finset.sum_congr rfl fun q _ => paf_zero (hx q)]
-  simp
 
 /-! ### The core alone: the classical Goethals--Seidel theorem -/
 
@@ -188,71 +172,10 @@ theorem borderedGS_subsingleton {G Gbar : Type*} [AddCommGroup G] [Fintype G] [D
     (h3 : H3 E P (Fintype.card G : ℤ) (4 * ((Fintype.card G : ℤ) + s)))
     (h4 : H4 E P Q (chat κ x ρ)) :
     Matrix.IsHadamard (border κ E P Q x ρ) := by
-  have hcardG : 0 < Fintype.card G := Fintype.card_pos_iff.mpr ⟨(0 : G)⟩
-  have hcard : (Fintype.card (Fin (4 * s) ⊕ (Fin 4 × G)) : ℤ)
-      = 4 * ((Fintype.card G : ℤ) + s) := by
-    rw [Fintype.card_sum, Fintype.card_fin, Fintype.card_prod, Fintype.card_fin]
-    push_cast
-    ring
   have hw : ∀ c : Gbar, (Finset.univ.filter fun g : G => κ g = c).card = Fintype.card G := by
     intro c
     rw [Finset.filter_true_of_mem fun g _ => Subsingleton.elim (κ g) c, Finset.card_univ]
-  -- (H3) is the top-left block, once the strip Gram is unfolded.
-  have hTL : E * E.transpose + rowStrip κ P * (rowStrip κ P).transpose
-      = (4 * ((Fintype.card G : ℤ) + s)) • 1 := by
-    rw [rowStrip_mul_transpose κ hw]
-    exact h3
-  -- (H4) is the top-right block, once compression is applied.
-  have hTR : E * (colStrip κ Q).transpose + rowStrip κ P * (core x ρ).transpose = 0 := by
-    ext r z
-    obtain ⟨I, g⟩ := z
-    have hPC : (rowStrip κ P * (core x ρ).transpose) r (I, g)
-        = (P * (chat κ x ρ).transpose) r (I, κ g) := by
-      have hinner : ∀ J : Fin 4, (∑ h : G, P r (J, κ h) * core x ρ (I, g) (J, h))
-          = ∑ c : Gbar, P r (J, c) * chat κ x ρ (I, κ g) (J, c) := by
-        intro J
-        rw [Fintype.sum_subsingleton _ (κ g)]
-        have hconst : ∀ h : G, P r (J, κ h) = P r (J, κ g) := fun h => by
-          rw [Subsingleton.elim (κ h) (κ g)]
-        simp only [hconst]
-        rw [← Finset.mul_sum, compression_index_one κ x ρ I J g (κ g)]
-      simp only [Matrix.mul_apply, Matrix.transpose_apply, rowStrip_apply,
-        Fintype.sum_prod_type]
-      exact Finset.sum_congr rfl fun J _ => hinner J
-    have h4' := congrFun (congrFun h4 r) ((I, κ g) : Fin 4 × Gbar)
-    rw [Matrix.add_apply, Matrix.zero_apply] at h4'
-    rw [Matrix.add_apply, Matrix.zero_apply, hPC]
-    exact h4'
-  have hBL : colStrip κ Q * E.transpose + core x ρ * (rowStrip κ P).transpose = 0 := by
-    have h := congrArg Matrix.transpose hTR
-    simpa [Matrix.transpose_add, Matrix.transpose_mul] using h
-  -- (H1) + (H2) are the bottom-right block.
-  have hBR : colStrip κ Q * (colStrip κ Q).transpose + core x ρ * (core x ρ).transpose
-      = (4 * ((Fintype.card G : ℤ) + s)) • 1 := by
-    ext z z'
-    obtain ⟨I, g⟩ := z
-    obtain ⟨J, h⟩ := z'
-    have hQQ : (Q * Q.transpose) (I, κ g) (J, κ h) = if I = J then 4 * (s : ℤ) else 0 :=
-      h1 (I, κ g) (J, κ h)
-    rw [Matrix.add_apply, colStrip_mul_transpose_apply, hQQ, core_gram, Matrix.smul_apply,
-      smul_eq_mul, Matrix.one_apply]
-    by_cases hIJ : I = J
-    · subst hIJ
-      rw [if_pos rfl, if_pos rfl]
-      by_cases hgh : g = h
-      · subst hgh
-        rw [sub_self, sumPaf_zero hx, if_pos rfl]
-        ring
-      · rw [h2 (g - h) (sub_ne_zero_of_ne hgh), if_neg (by simp [hgh])]
-        ring
-    · rw [if_neg hIJ, if_neg hIJ, if_neg (by simp [hIJ]), add_zero, mul_zero]
-  refine Matrix.IsHadamard.of_mul_conjTranspose
-    (fun i j => Unitary.mem_iff_eq_one_or_eq_neg_one.mpr
-      (border_isSign κ E P Q x ρ hE hP hQ hx i j)) ?_ ?_
-  · rw [Matrix.conjTranspose_eq_transpose_of_trivial, hcard, border_gram_iff]
-    exact ⟨hTL, hTR, hBL, hBR⟩
-  · rw [isRegular_iff_ne_zero, hcard]
-    omega
+  exact theoremA_sufficiency κ hw E P Q x ρ hE hP hQ hx (fun _ => 4 * (s : ℤ)) h1 h2 h3 h4
 
 /-- **The Wallis--Whiteman / Spence bordered construction**
 (`NOTE-B` §1.2, the `s = 1, i = 1` degeneration).

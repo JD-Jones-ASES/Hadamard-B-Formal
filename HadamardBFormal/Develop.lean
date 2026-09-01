@@ -20,6 +20,9 @@ This is `NOTE-B` §1.1, Lemma 1(a)--(d), for an arbitrary reflection shift `ρ`.
   automatically generic in `ρ`; the only new input here is
   `dev_isTypeOne`, i.e. `x (i - (ρ - j)) = x (j - (ρ - i))`.
 
+Also here, because everything downstream needs it: `paf_zero` and `sumPaf_zero`,
+the note's "at `t = 0` the sum is `4n` automatically".
+
 The proofs of `dev_mul_comm`, `dev_mul_transpose_comm`, `dev_mul_transpose_apply`
 and the four `revCols` identities are ported from `Hadamard-formal`
 (`HadamardFormal/CooperWallis.lean`, `HadamardFormal/GoethalsSeidel.lean`) at the
@@ -116,6 +119,25 @@ theorem dev_mul_transpose_apply {G : Type*} [Fintype G] [AddCommGroup G] (x : G 
   refine Finset.sum_congr rfl fun q _ => ?_
   change x (q + i - i) * x (q + i - j) = x q * x (q + (i - j))
   congr 2 <;> abel_nf
+
+/-! ### The profile at the origin -/
+
+/-- `PAF_x(0) = |G|` for a sign-valued sequence. -/
+theorem paf_zero {G : Type*} [Fintype G] [AddCommGroup G] {x : G → ℤ}
+    (hx : ∀ g, IsSign (x g)) : paf x 0 = Fintype.card G := by
+  have h : ∀ u : G, x u * x (u + 0) = 1 := by
+    intro u
+    rw [add_zero]
+    rcases hx u with hu | hu <;> rw [hu] <;> norm_num
+  rw [paf, Finset.sum_congr rfl fun u _ => h u]
+  simp
+
+/-- **`Σ PAF(0) = 4n` is automatic** (`NOTE-B` §1.1): the value of the aggregate
+profile at the origin is forced by the sign condition alone. -/
+theorem sumPaf_zero {G : Type*} [Fintype G] [AddCommGroup G] {x : Fin 4 → G → ℤ}
+    (hx : ∀ q g, IsSign (x q g)) : sumPaf x 0 = 4 * (Fintype.card G : ℤ) := by
+  rw [sumPaf, Finset.sum_congr rfl fun q _ => paf_zero (hx q)]
+  simp
 
 /-! ### Lemma 1(c), (d): the reflection identities -/
 
