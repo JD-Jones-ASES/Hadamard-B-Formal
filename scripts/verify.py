@@ -45,6 +45,7 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -265,12 +266,15 @@ def statement_parity(report: Report) -> None:
     names = comparator["theorem_names"]
     dumps: dict[str, str] = {}
     env = {k: v for k, v in os.environ.items() if k in ENV_KEEP}
+    # Probes live OUTSIDE the repository so an interrupted run can never
+    # leave a stray .lean file where a later `git add` would pick it up.
+    probe_dir = Path(tempfile.mkdtemp(prefix="hbf-parity-"))
     for module in ("Challenge", "Solution"):
         source = "\n".join(
             [f"import {module}", "set_option pp.all true",
              "set_option maxHeartbeats 1000000"]
             + [f"#check @{name}" for name in names]) + "\n"
-        probe = ROOT / f".parity_{module}.lean"
+        probe = probe_dir / f"parity_{module}.lean"
         probe.write_text(source, encoding="utf-8")
         try:
             proc = subprocess.run(

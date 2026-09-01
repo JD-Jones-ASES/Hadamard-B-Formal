@@ -5,3 +5,4 @@
 /.dev-build/
 __pycache__/
 *.pyc
+.parity_*
