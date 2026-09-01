@@ -39,6 +39,7 @@ abstract: >-
   licence of the whole snapshot.
 type: software
 version: 0.1.0
+date-released: 2026-09-01
 url: "https://github.com/JD-Jones-ASES/Hadamard-B-Formal"
 repository-code: "https://github.com/JD-Jones-ASES/Hadamard-B-Formal"
 authors:
