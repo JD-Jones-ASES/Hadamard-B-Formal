@@ -1,0 +1,21 @@
+name = "HadamardBFormal"
+version = "0.1.0"
+keywords = ["mathematics", "combinatorics", "hadamard-matrices", "palomar"]
+# packaging stage adds Challenge/Solution/Test
+defaultTargets = ["HadamardBFormal"]
+
+[leanOptions]
+pp.unicode.fun = true
+weak.linter.style.header.license = "Released under MIT license as described in the file LICENSE."
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+git = "https://github.com/leanprover-community/mathlib4.git"
+rev = "v4.33.0"
+
+[[lean_lib]]
+name = "HadamardBFormal"
+moreLeanArgs = ["-j", "1"]

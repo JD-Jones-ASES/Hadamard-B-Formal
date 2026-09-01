@@ -1,0 +1,7 @@
+/.lake/
+/.elan/
+/.elan-home/
+/.mathlib-cache/
+/.dev-build/
+__pycache__/
+*.pyc
