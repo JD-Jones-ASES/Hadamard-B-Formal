@@ -17,9 +17,15 @@ Index conventions, matched to `Hadamard-B/tools/bordered_gs.py`:
   (`HadamardBFormalCore.Data.pairIdx`), and `col_table` is stored transposed:
   `Q[(I,b)][r] = col_table[r][2I + b]`.
 
-The index convention is deliberately *not* proved correct.  If it were wrong the
-kernel check of the two-tier PAF profile in `HadamardBFormal/Data.lean` would
-simply fail and the build would go red.
+The index convention is not proved correct inside Lean, and a wrong one would
+not necessarily turn the build red: `(a, b, c) -> (a, b, -c)` at order 52 and
+the coordinate swap at order 20 both preserve `kappa` and leave the two-tier
+PAF profile check in `HadamardBFormal/Data.lean` green while naming a different
+matrix.  This exporter establishes which bytes were consumed and that they were
+decoded deterministically; literal source-index fidelity is the business of
+`scripts/crosscheck_assembly.py`, which re-implements the reading from
+`Challenge.lean` -- independently of this file -- and matches the assembled
+matrices against the source repository's own canonical digests.
 """
 
 from __future__ import annotations

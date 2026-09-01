@@ -9,8 +9,9 @@ import HadamardBFormal.TheoremD
 /-!
 # Transport across the doubling, and the index-two collapse
 
-`NOTE-B` §1.5 (D-e) and §1.6.  Two results, both about the *same* phenomenon: at
-`s = 1` the index-one and index-two border systems are one system.
+`NOTE-B` §1.5 (D-e) and §1.6.  Four compared declarations, all about the *same*
+phenomenon: at `s = 1` the index-one and index-two border systems are one
+system.
 
 * `theoremD_transport` — the transport half of **(D-e)**.  Given an `s = 1, i = 1`
   bordered instance `(E₁, P₁, Q₁)` for seeds `x`, the **doubled** tables
@@ -38,6 +39,13 @@ import HadamardBFormal.TheoremD
   involution of sign-valued quadruples carrying the `i = 1` seed problem
   (`Σ PAF(t) = −4` off the origin) onto the `i = 2` seed problem (the house
   profile at `s = 1`).  The two seed problems are one problem.
+
+  Like `twist_profile_iff`, this is stated for **any** `κ : G →+ ZMod 2`, not
+  only a surjective one — a strengthening, and one worth reading precisely.  For
+  a non-surjective `κ` the kernel is all of `G`, `ψ ≡ 1`, the twist is the
+  identity, and the statement holds trivially with the "`i = 2` profile"
+  degenerating back to the `i = 1` profile.  The **index-two** reading is the
+  surjective case; unrestricted, the object is a `ZMod 2`-coded profile.
 
 **Not formalized here** (future work — the rest of `NOTE-B` §1.6's Corollary): when the
 index-two subgroup `K` is *unique* it is characteristic, so `ψ ∘ α = ψ` for every

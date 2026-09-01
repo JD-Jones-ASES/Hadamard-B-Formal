@@ -3,14 +3,36 @@ import Mathlib
 /-!
 # Bordered Goethals--Seidel arrays: the public challenge
 
-The challenge asks for the mathematics of `NOTE-B` §1: an exact
-characterisation of when a Goethals--Seidel array over a finite abelian group
-extends to a Hadamard matrix through a **coset border** of width `4s` (Theorem
-A), the house form of that characterisation and its two classical
-degenerations (Theorem B), the character-twist layer (Lemma T and the
-`ψ(ρ) = 1` conjugation), the complete resolution of the `s = 1, i = 2` border
-system (Theorem D), the index-two seed-problem collapse, and two
-kernel-checkable instances of the theorem at orders `52` and `20`.
+The challenge asks for **part of** the mathematics of `NOTE-B` §1 — twenty-six
+theorems over fifty-eight definitions, and this is the whole list:
+
+* an exact characterisation, an iff, of when a Goethals--Seidel array over a
+  finite abelian group extends to a Hadamard matrix through a **coset border**
+  of width `4s` (Theorem A), stated with its sufficiency half separately;
+* the house form of that characterisation and its two classical degenerations
+  (Theorem B);
+* the row-sum rows **D5 and D6 only** — the forced-parameter clauses D1--D4 of
+  Theorem C and the classification corollary are **not** formalized;
+* the character-twist layer: Lemma T, the `s = 1` profile bijection, and the
+  `ψ(ρ) = 1` conjugation with its Hadamard-iff corollary;
+* Theorem D's clauses **(D-a) through (D-e)**, including the degenerate-branch
+  collapse **(D-a′)** — with the entry-for-entry `H = H₁` equality and its
+  converse — and **both** directions of the (D-e) transport, packaged as the
+  note's *exactly when*;
+* the **seed-problem bijection clause of §1.6, and only that clause**;
+* two kernel-checkable instances of Theorem A at orders `52` and `20`.
+
+On that surface this is a complete resolution of the `s = 1, i = 2` border
+system in the sense of Theorem D's own clauses — with the two exclusions that
+belong in the same breath: §1.6's characteristic-subgroup and
+automorphism-equivariance clauses are not formalized, and neither is the `768²`
+census behind (D-e), which is a certificate in the source repository rather
+than a theorem here.
+
+Every definition below carries its intended value in its docstring, because the
+definitions are where the content sits: an unchecked `border`, `gsBlock`,
+`H1`--`H4` or instance literal would let every theorem be true of a different
+object.
 
 No novelty of existence is claimed at orders `52` or `20` — both are long
 settled.  What the instance statements say is that the *theorem* carries them:
@@ -135,7 +157,11 @@ def chat {G Gbar : Type*} [Fintype G] [AddCommGroup G] [AddCommGroup Gbar] [Deci
 H = [ E   P̃ ]
     [ Q̃   C ]
 ```
--/
+
+This is the object every conclusion is about: `Matrix.IsHadamard (border …)` is
+the conclusion of Theorem A, of both classical degenerations, of the transport,
+and of the two instances.  The index type `Fin (4s) ⊕ (Fin 4 × G)` puts the
+`4s` border rows first, then the four superblocks, each running over `G`. -/
 def border {G Gbar : Type*} [AddCommGroup G] [AddCommGroup Gbar] {s : ℕ} (κ : G →+ Gbar)
     (E : Matrix (Fin (4 * s)) (Fin (4 * s)) ℤ)
     (P : Matrix (Fin (4 * s)) (Fin 4 × Gbar) ℤ)
@@ -144,23 +170,33 @@ def border {G Gbar : Type*} [AddCommGroup G] [AddCommGroup Gbar] {s : ℕ} (κ :
     Matrix (Fin (4 * s) ⊕ (Fin 4 × G)) (Fin (4 * s) ⊕ (Fin 4 × G)) ℤ :=
   Matrix.fromBlocks E (rowStrip κ P) (colStrip κ Q) (core x ρ)
 
-/-- **(H1)** `Q Qᵀ = I₄ ⊗ M` with `M` a `Gbar`-invariant table. -/
+/-- **(H1)** `Q Qᵀ = I₄ ⊗ M` with `M` a `Gbar`-invariant table: the column
+table's Gram is block-scalar, and its one block `M` is the Gram table (H2) must
+match.  Theorem A quantifies over `M`; `theoremD_tables` forces its two values
+at `s = 1, i = 2`. -/
 def H1 {Gbar : Type*} {s : ℕ} [AddCommGroup Gbar] (Q : Matrix (Fin 4 × Gbar) (Fin (4 * s)) ℤ)
     (M : Gbar → ℤ) : Prop :=
   ∀ a b : Fin 4 × Gbar, (∑ c, Q a c * Q b c) = if a.1 = b.1 then M (a.2 - b.2) else 0
 
-/-- **(H2)** `Σ PAF(t) = -M (κ t)` off the origin. -/
+/-- **(H2)** `Σ PAF(t) = -M (κ t)` off the origin: the seeds' aggregate
+periodic autocorrelation is prescribed by the Gram table and factors through
+`Ḡ`.  `theoremB_profile` identifies it, for the house table, with the two-tier
+profile; `collapse_seedProblem_bijection` is a bijection onto it. -/
 def H2 {G Gbar : Type*} [Fintype G] [AddCommGroup G] [AddCommGroup Gbar] (x : Fin 4 → G → ℤ)
     (κ : G →+ Gbar) (M : Gbar → ℤ) : Prop :=
   ∀ t : G, t ≠ 0 → sumPaf x t = -M (κ t)
 
-/-- **(H3)** `E Eᵀ + w · P Pᵀ = N · I`. -/
+/-- **(H3)** `E Eᵀ + w · P Pᵀ = N · I`: the border's own rows are orthogonal,
+each coset contributing `w` copies of its strip entry.  `theoremD_rowTable`
+forces `E` and the reduced row table to be `4 × 4` Hadamard out of it. -/
 def H3 {Gbar : Type*} {s : ℕ} [Fintype Gbar] [DecidableEq Gbar]
     (E : Matrix (Fin (4 * s)) (Fin (4 * s)) ℤ)
     (P : Matrix (Fin (4 * s)) (Fin 4 × Gbar) ℤ) (w N : ℤ) : Prop :=
   E * E.transpose + w • (P * P.transpose) = N • 1
 
-/-- **(H4)** `E Qᵀ + P Ĉᵀ = 0`. -/
+/-- **(H4)** `E Qᵀ + P Ĉᵀ = 0`: the corner-and-row-strip block is orthogonal to
+the column-strip-and-core block, the core entering only through its compression
+`Ĉ`.  `theoremD_border` collapses it to a single `4 × 4` equation. -/
 def H4 {Gbar : Type*} {s : ℕ} [Fintype Gbar] [DecidableEq Gbar]
     (E : Matrix (Fin (4 * s)) (Fin (4 * s)) ℤ)
     (P : Matrix (Fin (4 * s)) (Fin 4 × Gbar) ℤ)
@@ -689,7 +725,10 @@ theorem collapse_seedProblem_bijection {G : Type*} [AddCommGroup G] [Fintype G]
 A from-scratch `s = 1, i = 2` instance on the **non-cyclic** group
 `G = ZMod 2 × ZMod 2 × ZMod 3` with `w = 6`, in the `ε = +1` branch
 (`κ ρ = 0`) — the Theorem-D instance the four decoded `i = 2` records do not
-exercise.  The literals are those of `Hadamard-B/data/h52-gate.json`. -/
+exercise.  The literals are those of `Hadamard-B/data/h52-gate.json`, and
+`scripts/crosscheck_assembly.py` requires them to equal that record entry for
+entry and the matrix they assemble under the index maps below to carry the
+record's own pinned digest. -/
 
 /-- The gate group `G = ZMod 2 × ZMod 2 × ZMod 3`, of order 12. -/
 abbrev G52 : Type := ZMod 2 × ZMod 2 × ZMod 3
@@ -722,7 +761,8 @@ def kappa52 : G52 →+ ZMod 2 where
 `κ ρ = 0` this instance is the `ε = +1` branch. -/
 def rho52 : G52 := 0
 
-/-- The seed literals of the gate record. -/
+/-- The seed literals of the gate record: entry `k` of row `q` is `x_q` at the
+group element of flat index `k` under `gidx52`. -/
 def seed52Data : Vector (Vector Int 12) 4 :=
   #v[
     #v[-1, -1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1],

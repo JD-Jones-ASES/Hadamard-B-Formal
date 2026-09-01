@@ -3,37 +3,33 @@ version: "v0.4"
 project:
   name: "hadamard-b-formal: the bordered Goethals-Seidel characterisation, the s=1 layer, and Theorem D"
   description: >-
-    A Lean 4 formalization of the theorem layer of the Hadamard-B note on
-    bordered Goethals-Seidel arrays. The development proves an exact
-    if-and-only-if characterisation (Theorem A) of when a Goethals-Seidel
-    array of four sign-valued sequences over a finite abelian group G extends
-    to a Hadamard matrix through a border of width 4s whose strips are
-    constant on the cosets of a subgroup K, with the quotient presented as a
-    surjective additive hom; the house form of that characterisation (Theorem
-    B), whose hypothesis (H2) is exactly the two-tier periodic-autocorrelation
-    profile, together with its two classical degenerations - the
-    Goethals-Seidel theorem over an arbitrary finite abelian group at an
-    arbitrary reflection shift, and the Wallis-Whiteman/Spence bordered
-    construction; the two row-sum consequences D5 and D6 of the profile; the
-    character-twist layer of the note's section 1.4 - Lemma T, the s = 1
-    profile bijection, and the theorem that a twist with psi(rho) = 1 is a
-    diagonal conjugation and so manufactures no new matrix; the complete
-    resolution of the s = 1, index-2 border system (Theorem D): the forced
-    Gram table and pair-negated column table, the forced row table and the
-    Hadamard corner, the collapse of hypothesis (H4) to a single 4x4 border
-    equation, the integer Parseval identity sum of delta_q squared = 4, and
-    the transport of an index-1 border across the doubling; and the index-2
-    seed-problem collapse, which exhibits the character twist as an
-    involutive bijection carrying the s = 1, i = 1 seed problem onto the
-    s = 1, i = 2 seed problem. Two witness records are imported under SHA-256
-    pins and checked by kernel reduction against the hypotheses of Theorem A,
-    yielding Hadamard matrices of orders 52 and 20 through the theorem rather
-    than by matrix multiplication. No novelty of existence is claimed at
-    either order: both are long settled, and the instances exist to
-    instantiate the theorem - the gate record is a from-scratch index-2
-    instance on the non-cyclic group Z2 x Z2 x Z3 in the epsilon = +1 branch,
-    and the order-20 record sits on the w = 2s hypothesis boundary with K the
-    diagonal subgroup of Z2 x Z2 rather than a coordinate kernel.
+    A Lean 4 and Mathlib formalization of part of the theorem layer of the
+    Hadamard-B note on bordered Goethals-Seidel arrays: twenty-six compared
+    theorems over fifty-eight compared definitions. Theorem A characterises, by
+    an if-and-only-if, when a Goethals-Seidel array of four sign-valued
+    sequences over a finite abelian group extends to a Hadamard matrix through
+    a border of width 4s whose strips are constant on the cosets of a subgroup.
+    Theorem B is its house
+    form, whose hypothesis is exactly a two-tier periodic-autocorrelation
+    profile, and carries two classical degenerations at an arbitrary reflection
+    shift: the Goethals-Seidel theorem over an arbitrary finite abelian group,
+    and the Wallis-Whiteman/Spence bordered construction. Of Theorem C only the
+    row-sum rows D5 and D6 are formalized; clauses D1-D4 and the classification
+    corollary are not. The character-twist layer is Lemma T, the s = 1 profile
+    bijection, and the theorem that a twist fixing the reflection shift is a
+    diagonal conjugation. Theorem D is covered at clauses (D-a) through (D-e):
+    the forced Gram and border tables, the collapse of (H4) to a single 4x4
+    equation, the integer Parseval identity, both directions of the transport
+    across the doubling, and clause (D-a'), which identifies the degenerate
+    branch with the index-one construction entry for entry, again in both
+    directions. The index-two collapse corollary is represented by its
+    seed-problem bijection clause alone; its characteristic-subgroup and
+    equivariance clauses are not formalized, nor is the 768-squared census
+    behind (D-e). Two witness records are imported under SHA-256 pins,
+    cross-checked against the source's canonical matrix digests, and checked by
+    kernel reduction against Theorem A's hypotheses, giving Hadamard matrices
+    of orders 52 and 20 through the theorem rather than by matrix
+    multiplication; no novelty of existence is claimed at either order.
   authors:
     - "JD Jones"
   license: "MIT"
@@ -67,7 +63,17 @@ sources:
       instance records this repository's exporter pins: the H(52) Theorem-D
       gate (cert 03) and the H(20) w = 2s boundary instance T1 (cert 05). The
       note's own labels record which claims are paper-grade proofs and which
-      rest on certificates; this formalization covers the former.
+      rest on certificates; this formalization covers part of the former.
+      ACCESSIBILITY: this repository is PRIVATE at the time of writing and is
+      expected to be public at registration. A reader reaching this entry
+      before that flip cannot inspect the note at its pinned SHA. The commit
+      above is the most stable identifier that exists, and nothing here claims
+      more than it supports: the README gives a plain-language account of every
+      compared theorem and Challenge.lean gives every compared definition its
+      intended value, so the exact claim can be identified and assessed without
+      reaching the source. Claims about the source's own results - its
+      certificates, its searches, its prior-art statements - rest on the source
+      and count towards nothing else.
     author_endorsement: "participated"
   - title: "A skew Hadamard matrix of order 36"
     authors:
@@ -126,9 +132,11 @@ sources:
       included.
 
 related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/v4.33.0/Mathlib/LinearAlgebra/Matrix/HadamardMatrix.lean"
+  - id: "https://github.com/leanprover-community/mathlib4/blob/db584cd6d46c92f209a44c0f1c829460d327499d/Mathlib/LinearAlgebra/Matrix/HadamardMatrix.lean"
     relationship: "builds-on"
     note: >-
+      At the exact Mathlib commit pinned by lake-manifest.json, which is the
+      commit the tag v4.33.0 named when this package was built.
       Mathlib's Hadamard-matrix module supplies the Matrix.IsHadamard
       predicate that every compared conclusion is stated in, together with
       Matrix.IsHadamard.of_mul_conjTranspose and the transpose-side
@@ -137,9 +145,10 @@ related_formalizations:
       Mathlib at this revision has no content on Goethals-Seidel arrays,
       group-developed blocks, coset borders, or the autocorrelation profiles
       studied here.
-  - id: "https://github.com/leanprover-community/mathlib4/blob/v4.33.0/Mathlib/LinearAlgebra/Matrix/Circulant.lean"
+  - id: "https://github.com/leanprover-community/mathlib4/blob/db584cd6d46c92f209a44c0f1c829460d327499d/Mathlib/LinearAlgebra/Matrix/Circulant.lean"
     relationship: "builds-on"
     note: >-
+      At the same pinned Mathlib commit.
       Mathlib's circulant module is the nearest existing object to the
       development's type-1 development dev x, which is the transpose of
       Matrix.circulant x. The module carries circulant multiplication and
@@ -147,20 +156,23 @@ related_formalizations:
       general abelian group indexed by a quotient, and nothing on the block
       array; the proofs here use the direct convolution route rather than
       Matrix.circulant_mul.
-  - id: "https://github.com/JD-Jones-ASES/Hadamard-formal"
+  - id: "https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-31-000001&version=1"
     relationship: "builds-on"
     note: >-
-      The sibling Lean repository from the same laboratory, registered as
-      PALOMAR-2026-08-31-000001. Its developed-matrix algebra and its
+      The sibling Lean repository Hadamard-formal from the same laboratory,
+      https://github.com/JD-Jones-ASES/Hadamard-formal, registered
+      2026-08-31 as PALOMAR-2026-08-31-000001. Its developed-matrix algebra and its
       sixteen-block Goethals-Seidel Gram lemma are the ancestors of the
       corresponding lemmas here, ported with two changes: the six transposed
       blocks are negated, because that repository uses the SageMath
       orientation while this one uses the note's standard orientation, and the
       reflection is an arbitrary shift R_rho rather than the group inversion.
       The sign layer (IsSign) and the reindexing helpers match it on the nose.
-  - id: "Paul-Lez/hadamard-668-comparator (GitHub, created 2026-08-14; Palomar entry PALOMAR-2026-08-17-000002)"
+  - id: "https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-17-000002&version=1"
     relationship: "other"
     note: >-
+      Paul-Lez/hadamard-668-comparator on GitHub, created 2026-08-14 and
+      registered 2026-08-17 as PALOMAR-2026-08-17-000002.
       A Lean formalization that verifies a single Hadamard matrix of order
       668 built from the publicly posted data of 2026-08-12; its Challenge.lean
       independently exhibits the bordered structure at that order - circulants
@@ -168,9 +180,11 @@ related_formalizations:
       4x4 corner. It states no general construction theorem, so it does not
       overlap the compared surface here; the source note records the
       independent exhibition of the border shape (NOTE-B section 4.3).
-  - id: "Arthur742Ramos/hadamard-668-lean (GitHub, created 2026-08-28; Palomar entry PALOMAR-2026-08-29-000009)"
+  - id: "https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-29-000009&version=1"
     relationship: "other"
     note: >-
+      Arthur742Ramos/hadamard-668-lean on GitHub, created 2026-08-28 and
+      registered 2026-08-29 as PALOMAR-2026-08-29-000009.
       A Lean formalization (Ramos-Hulak-de Queiroz) that verifies one supplied
       Hadamard matrix of order 668 from the same public data. It states no
       general construction theorem. As the source note puts it, neither of the two public order-668
@@ -194,16 +208,22 @@ status:
     i = 1 assembly entry for entry, and (H1)-(H4) transport termwise, in both
     directions), and both halves of the (D-e) transport, packaged as an
     exactly-when; the index-2 seed-problem bijection; and the two witness
-    instances at orders 52 and 20 with their existence corollaries. Not formalized: Theorem C's forced
+    instances at orders 52 and 20 with their existence corollaries. That is
+    twenty-six compared theorems over fifty-eight compared definitions, and on
+    that surface it is a complete resolution of the s = 1, i = 2 border system
+    in the sense of Theorem D's own clauses - subject to the two exclusions
+    named next in the same breath. Not formalized: Theorem C's forced
     parameter clauses D1-D4 and the classification corollary that reads them
     off (they need positive semidefiniteness and rank over the reals and
     character orthogonality over the complexes; only D5 and D6 are in scope);
     the characteristic-subgroup and automorphism-equivariance clauses of the
-    index-2 collapse corollary (NOTE-B section 1.6); the section-3 separation
-    theorem at order 668 and its invariants, whose exact 4-profiles are
-    categorically outside kernel reach; and the 768-squared census of (D-e),
-    which is a Python certificate in the source repository (its cert 10,
-    labelled PROVEN-BY-CERTIFICATE there), not a theorem here. Every statement is for the note's standard orientation only:
+    index-2 collapse corollary (NOTE-B section 1.6); the 768-squared census of
+    (D-e), which is a Python certificate in the source repository (its cert 10,
+    labelled PROVEN-BY-CERTIFICATE there), not a theorem here; and the
+    section-3 separation theorem at order 668 and its invariants - the exact
+    4-profile computations behind those are not formalized here, are outside
+    this registration's scope, and are impractical under direct kernel
+    reduction. Every statement is for the note's standard orientation only:
     the companion order-20 instance T2 declares the transpose-negated
     orientation and the exporter refuses to emit it. The quotient G/K is
     modelled as a surjective additive hom rather than as a quotient type.
@@ -393,7 +413,8 @@ fidelity:
     matching borderedGS_subsingleton, and the doubling of an i = 1 border is
     encoded by the two pair-equality hypotheses rather than by a separate
     doubling operator. The section-3 separation at order 668 is not formalized
-    and is outside kernel reach. Where the note writes Fin 4 for a corner at
+    here; its exact 4-profile computations are outside this registration's
+    scope and impractical under direct kernel reduction. Where the note writes Fin 4 for a corner at
     s = 1, several statements carry the definitionally equal Fin (4 * 1); this
     is cosmetic. Proof-level. theoremD_tables is proved by an integer route -
     U U-transpose = 4I upgrades to Matrix.IsHadamard, whose transpose-side
@@ -410,30 +431,57 @@ fidelity:
     the rationals. deltaSqSum_eq_four is proved without surjectivity of kappa,
     which the note's Parseval phrasing assumes; its degenerate-branch companion
     deltaSqSum_degenerate does need the two fibers to have equal size, which is
-    where the index enters. D5 now takes only the size of the fiber over zero
-    as its hypothesis, that being all its proof ever used. Several statements drop hypotheses the note's ambient
+    where the index enters. D5 hypothesises only the cardinality of the fiber
+    over zero, that being all its proof uses: neither surjectivity of kappa,
+    nor the index, nor the size of any other fiber enters, so it is stated more
+    generally than the note's ambient setting. Several statements drop hypotheses the note's ambient
     setting carries, always in the strengthening direction: D5 and D6 do not
     assume w > 2s; lemmaT does not assume the character's kernel has index 2;
     theoremD_rowTable does not assume Q sign-valued (the pair-negation
     hypothesis suffices); and the section-1.5 statements other than
     theoremD_rowTable do not assume n >= 4, so theoremD_transport also covers
-    the w = 1 case the note excludes as vacuous. Surjectivity of kappa in fact
+    the w = 1 case the note excludes as vacuous. NON-SURJECTIVE KAPPA.
+    twist_profile_iff and collapse_seedProblem_bijection accept ANY additive
+    hom kappa : G -> ZMod 2, where the note's profile bijection and its
+    section-1.6 corollary begin from a character whose kernel has index two.
+    This is a strengthening, not an error: for a non-surjective kappa the
+    kernel is all of G, psi is identically 1, the twist is the identity, and
+    both statements hold trivially with the "i = 2 profile" degenerating to the
+    i = 1 profile. The index-two reading of these two theorems therefore
+    applies to surjective kappa; the unrestricted object is a ZMod 2-coded
+    profile, and the theorems are stated at the stronger generality rather than
+    carrying a surjectivity hypothesis they do not need. Surjectivity of kappa in fact
     follows from the constant-fiber-size hypothesis (the fiber over zero is
     nonempty, so w >= 1, so every fiber is nonempty); theoremA states it
     explicitly for readability, and theoremA_sufficiency omits it.
 
 review:
-  status: "self-assessed"
+  status: "agent-reviewed"
   reviewers:
-    - "JD Jones"
+    - "Claude (Anthropic) - statement-fidelity audit lane, 2026-09-01"
+    - "GPT 5.6 (OpenAI, Codex desk) - independent package review, 2026-09-01"
   notes: >-
-    The Lean kernel checks all solution proofs and both concrete instance
-    records, and the build-time axiom audit permits only propext,
-    Classical.choice, and Quot.sound. Statement fidelity to the source note was
-    audited by an AI lane against the note's current text and was not reviewed
-    by an independent human expert. Kernel replay, Comparator statement
-    matching, and the axiom audit establish proof replay and statement
-    fidelity, not literature status or novelty; the source note's own prior-art
+    BOTH REVIEWS WERE PERFORMED BY AI SYSTEMS, AND NO INDEPENDENT HUMAN EXPERT
+    REVIEW HAS OCCURRED. The Claude lane audited every compared statement
+    against the source note's current text and produced the divergence list
+    under fidelity.divergences. The Codex review was independent of that lane:
+    it rebuilt the package from an isolated checkout of the tracked files with
+    the pinned Lean 4.33.0 toolchain, replayed the transitive axiom audit over
+    every compared declaration, re-ran the exporter in --check mode, and
+    reviewed the publication surface; its findings were adjudicated and applied
+    before this commit. JD Jones is the responsible owner, publisher and
+    maintainer and appears in authors and responsible_maintainers; he is NOT a
+    reviewer and made no mathematical contribution. What has actually been run
+    locally: lake build, the build-time transitive axiom audit (propext,
+    Classical.choice, Quot.sound only), the exporter determinism check, and the
+    assembly cross-check against the source repository's canonical matrix
+    digests. What has NOT been run: Palomar Comparator, lean4export, and
+    NanoDa - no such tooling is installed on the machine that built this. A
+    successful Palomar protected run would additionally establish that the
+    recorded Solution satisfies the recorded Challenge and that the exported
+    proof replays through Lean's kernel and the pinned NanoDa kernel. None of
+    these checks, local or protected, establishes fidelity to the informal
+    source, novelty, interest, or peer review; the source note's own prior-art
     and credit statements (NOTE-B section 4) are documentary claims resting on
     the sources cited there.
 
@@ -468,7 +516,11 @@ alignment:
       lean: "HadamardBFormal.D5"
       module: "Solution"
       status: "proved"
-      note: "Summing the house profile over G gives the second moment of the row sums."
+      note: >-
+        Summing the house profile over G gives the second moment of the row
+        sums. The hypothesis is the cardinality of the fiber over zero alone -
+        that is all the proof uses, so neither surjectivity of kappa nor the
+        index nor any other fiber size is assumed.
     - source: "NOTE-B section 1.3, D6"
       lean: "HadamardBFormal.D6"
       module: "Solution"
@@ -640,8 +692,12 @@ alignment:
       note: "Existence at order 20, from the boundary record. No novelty of existence is claimed."
 
 acknowledgements: >-
-  Built with Lean and Mathlib. Public statement matching and independent replay
-  use Palomar Comparator, lean4export, and NanoDa. The mathematical source
+  Built with Lean and Mathlib. Public statement matching and independent kernel
+  replay would be performed by Palomar Comparator, lean4export, and NanoDa in
+  Palomar's protected environment; none of that tooling has been run against
+  this repository, and the assurances established locally are the build, the
+  transitive axiom audit, the exporter determinism check, and the assembly
+  cross-check. The mathematical source
   work and this formalization were produced with Claude Code (Fable 5) and
   Claude Opus subagent lanes. The classical machinery is due to Goethals and
   Seidel, to Wallis and Whiteman, and to Spence; the compression device is

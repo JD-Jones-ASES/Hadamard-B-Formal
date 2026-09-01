@@ -2,33 +2,42 @@ cff-version: 1.2.0
 message: "If you use this formalization, cite it via this metadata."
 title: "hadamard-b-formal: a Lean formalization of the bordered Goethals-Seidel characterisation and the s = 1 border system"
 abstract: >-
-  A Lean 4 and Mathlib formalization of the theorem layer of the Hadamard-B
-  note. It proves an exact if-and-only-if characterisation of when a
+  A Lean 4 and Mathlib formalization of part of the theorem layer of the
+  Hadamard-B note: twenty-six compared theorems over fifty-eight compared
+  definitions. It proves an exact if-and-only-if characterisation of when a
   Goethals-Seidel array over a finite abelian group extends to a Hadamard
   matrix through a border whose strips are constant on the cosets of a
   subgroup; the house form of that characterisation, whose hypothesis is
   exactly a two-tier periodic-autocorrelation profile, together with the
   classical Goethals-Seidel theorem over an arbitrary abelian group and the
   Wallis-Whiteman/Spence bordered construction, both at an arbitrary
-  reflection shift; the two row-sum consequences D5 and D6; Lemma T, the
-  s = 1 profile bijection, and the theorem that a twist fixing the reflection
-  shift is a diagonal conjugation; the complete resolution of the s = 1,
-  index-two border system (Theorem D), including the forced Gram and border
-  tables, the collapse of the border condition to a single 4x4 equation, the
-  integer Parseval identity, and transport across the doubling; and the
-  index-two seed-problem collapse. Two witness records are imported under
-  SHA-256 pins and checked in the kernel against the hypotheses of the
-  characterisation, carrying Hadamard matrices of orders 52 and 20 through the
-  theorem rather than through a matrix product; no novelty of existence is
-  claimed at either order, both of which are long settled. All twenty-two
-  public theorems are kernel-checked with axioms confined to propext,
-  Classical.choice, and Quot.sound. AI-generated formalization with a human
-  managing the workflow - produced by Claude Code (Fable 5, Anthropic) with
-  Claude Opus subagent lanes; see DISCLOSURE.md. The authors field below
-  records the repository owner and responsible publisher; the AI/human
-  division of labour is DISCLOSURE.md. The single license below covers the
-  code, which is the artifact; the prose documents are CC BY-SA 4.0, assigned
-  by category in LICENSE-DOCS.md.
+  reflection shift; the two row-sum consequences D5 and D6 of Theorem C, and
+  only those two - the forced-parameter clauses D1-D4 and the classification
+  corollary are not formalized; Lemma T, the s = 1 profile bijection, and the
+  theorem that a twist fixing the reflection shift is a diagonal conjugation;
+  Theorem D's clauses (D-a) through (D-e), including the degenerate-branch
+  collapse (D-a') with its entry-for-entry equality of the two assemblies and
+  its converse, and both directions of the (D-e) transport, packaged as an
+  exactly-when; and the seed-problem bijection clause of the index-two
+  collapse corollary - only that clause, the characteristic-subgroup and
+  automorphism-equivariance clauses being unformalized, as is the 768-squared
+  census behind (D-e). On the compared surface this resolves the s = 1,
+  index-two border system in the sense of Theorem D's own clauses, subject to
+  those two exclusions. Two witness records are imported under SHA-256 pins,
+  cross-checked against the source repository's canonical matrix digests, and
+  checked in the kernel against the hypotheses of the characterisation,
+  carrying Hadamard matrices of orders 52 and 20 through the theorem rather
+  than through a matrix product; no novelty of existence is claimed at either
+  order, both of which are long settled. All twenty-six public theorems are
+  kernel-checked with axioms confined to propext, Classical.choice, and
+  Quot.sound. AI-generated formalization with a human managing the workflow -
+  produced by Claude Code (Fable 5, Anthropic) with Claude Opus subagent
+  lanes, and reviewed by two AI systems with no independent human expert
+  review; see DISCLOSURE.md. The authors field below records the repository
+  owner and responsible publisher, not a mathematical contributor; the
+  AI/human division of labour is DISCLOSURE.md. The licence below is the
+  licence of the whole snapshot; the prose documents are additionally offered
+  under CC BY-SA 4.0 as a secondary grant, described in LICENSE-DOCS.md.
 type: software
 version: 0.1.0
 url: "https://github.com/JD-Jones-ASES/Hadamard-B-Formal"

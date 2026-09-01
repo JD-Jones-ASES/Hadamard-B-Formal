@@ -20,10 +20,18 @@ dot products, (H3) is `4 × 4` and (H4) is `4 × 8`.  **The assembled `52 × 52`
 matrix and its `52³` product are never materialized** — the Hadamard conclusion
 is *derived* from Theorem A in `HadamardBFormal/Results.lean`, not computed.
 
-The index convention of the exporter is not proved correct and does not have to
-be: a wrong mixed-radix order would make `h2_52` — the profile check — fail, and
-the build would go red.  `H1`--`H4` are `def`s rather than `abbrev`s, so each
-check unfolds its hypothesis before handing the goal to `decide`.
+The index convention of the exporter is not proved correct inside Lean, and a
+wrong one would **not** necessarily turn the build red: the reindexing
+`(a,b,c) ↦ (a,b,−c)` preserves `κ` and leaves `h2_52` — the profile check —
+green, and at order 20 so does the coordinate swap; each names a different
+matrix satisfying the same hypotheses.  What the checks here establish is the
+mathematical properties of the functions Lean receives; the exporter's SHA-256
+pins establish which bytes were consumed; literal source-index fidelity rests on
+convention review together with the independent cross-check
+`scripts/crosscheck_assembly.py`, which reassembles both instances from
+`Challenge.lean`'s semantics and requires the source repository's own canonical
+digests.  `H1`--`H4` are `def`s rather than `abbrev`s, so each check unfolds its
+hypothesis before handing the goal to `decide`.
 -/
 
 namespace HadamardBFormalCore.Data
