@@ -8,3 +8,5 @@ import HadamardBFormal.House
 import HadamardBFormal.Twist
 import HadamardBFormal.TheoremD
 import HadamardBFormal.Collapse
+import HadamardBFormal.Data
+import HadamardBFormal.Results
