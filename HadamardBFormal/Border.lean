@@ -56,7 +56,7 @@ def chat [Fintype G] [AddCommGroup G] [AddCommGroup Gbar] [DecidableEq Gbar]
   core (fun q => cosetSum κ (x q)) (κ ρ)
 
 /-- The bordered array `H = [[E, P̃],[Q̃, C]]`. -/
-def border [AddCommGroup G] {s : ℕ} (κ : G → Gbar)
+def border [AddCommGroup G] [AddCommGroup Gbar] {s : ℕ} (κ : G →+ Gbar)
     (E : Matrix (Fin (4 * s)) (Fin (4 * s)) ℤ)
     (P : Matrix (Fin (4 * s)) (Fin 4 × Gbar) ℤ)
     (Q : Matrix (Fin 4 × Gbar) (Fin (4 * s)) ℤ)
@@ -70,7 +70,8 @@ def H1 {s : ℕ} [AddCommGroup Gbar] (Q : Matrix (Fin 4 × Gbar) (Fin (4 * s)) �
   ∀ a b : Fin 4 × Gbar, (∑ c, Q a c * Q b c) = if a.1 = b.1 then M (a.2 - b.2) else 0
 
 /-- **(H2)** `Σ PAF(t) = -M (κ t)` off the origin. -/
-def H2 [Fintype G] [AddCommGroup G] (x : Fin 4 → G → ℤ) (κ : G → Gbar) (M : Gbar → ℤ) : Prop :=
+def H2 [Fintype G] [AddCommGroup G] [AddCommGroup Gbar] (x : Fin 4 → G → ℤ) (κ : G →+ Gbar)
+    (M : Gbar → ℤ) : Prop :=
   ∀ t : G, t ≠ 0 → sumPaf x t = -M (κ t)
 
 /-- **(H3)** `E Eᵀ + w · P Pᵀ = N · I`. -/
