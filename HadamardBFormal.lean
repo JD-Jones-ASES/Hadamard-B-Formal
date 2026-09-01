@@ -7,3 +7,4 @@ import HadamardBFormal.TheoremA
 import HadamardBFormal.House
 import HadamardBFormal.Twist
 import HadamardBFormal.TheoremD
+import HadamardBFormal.Collapse
