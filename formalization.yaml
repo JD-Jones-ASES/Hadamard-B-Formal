@@ -46,7 +46,7 @@ sources:
   - title: "Hadamard-B: bordered Goethals-Seidel arrays - characterisation, classification, and three equivalence classes at order 668"
     authors:
       - "JD Jones"
-    id: "https://github.com/JD-Jones-ASES/Hadamard-B/tree/35665af5bc97bf3811bf971e39051727fcc99d10"
+    id: "https://github.com/JD-Jones-ASES/Hadamard-B/tree/01a7f0614208ca68d69e64a7cd5b560aadafbb8a"
     type: "other"
     location: >-
       note/NOTE-B.md sections 1.0-1.6 and 2.2; data/h52-gate.json (SHA-256
@@ -64,16 +64,14 @@ sources:
       gate (cert 03) and the H(20) w = 2s boundary instance T1 (cert 05). The
       note's own labels record which claims are paper-grade proofs and which
       rest on certificates; this formalization covers part of the former.
-      ACCESSIBILITY: this repository is PRIVATE at the time of writing and is
-      expected to be public at registration. A reader reaching this entry
-      before that flip cannot inspect the note at its pinned SHA. The commit
-      above is the most stable identifier that exists, and nothing here claims
-      more than it supports: the README gives a plain-language account of every
-      compared theorem and Challenge.lean gives every compared definition its
-      intended value, so the exact claim can be identified and assessed without
-      reaching the source. Claims about the source's own results - its
-      certificates, its searches, its prior-art statements - rest on the source
-      and count towards nothing else.
+      ACCESSIBILITY: the repository is public as of 2026-09-01 and the pinned
+      commit resolves without authentication (verified the same day). The
+      account here is nonetheless self-contained: the README gives a
+      plain-language account of every compared theorem and Challenge.lean gives
+      every compared definition its intended value, so the exact claim can be
+      identified and assessed without reaching the source. Claims about the
+      source's own results - its certificates, its searches, its prior-art
+      statements - rest on the source and count towards nothing else.
     author_endorsement: "participated"
   - title: "A skew Hadamard matrix of order 36"
     authors:

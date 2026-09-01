@@ -144,16 +144,16 @@ formalized here, are outside this registration's scope, and are impractical
 under direct kernel reduction; they are Hadamard-B's certificates, not theorems
 here.
 
-The mathematical source repository is **private at the time of writing** and is
-expected to be public at registration. Until it is, a reader cannot inspect the
-note at its pinned SHA. The account in `README.md` is written to be
-self-contained for that reason: every compared theorem has a plain-language
-statement there and every compared definition a docstring in `Challenge.lean`,
-so the exact claim can be identified and assessed without reaching the source.
+The mathematical source repository is **public as of 2026-09-01**, and the
+pinned commit resolves without authentication — verified the same day. The
+account in `README.md` is nonetheless written to be self-contained: every
+compared theorem has a plain-language statement there and every compared
+definition a docstring in `Challenge.lean`, so the exact claim can be
+identified and assessed without reaching the source.
 
 ## Credit for external mathematics and data
 
-- `Hadamard-B@35665af5bc97bf3811bf971e39051727fcc99d10`, `note/NOTE-B.md`
+- `Hadamard-B@01a7f0614208ca68d69e64a7cd5b560aadafbb8a`, `note/NOTE-B.md`
   §§1.0–1.6 and §2.2, supplies every statement formalized here and the two
   instance records.
 - The full credit chain, with the sources read firsthand and the one bounded

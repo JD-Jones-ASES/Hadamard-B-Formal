@@ -78,9 +78,9 @@ For the submission form's optional `context` field, which is published:
 2. Review the snapshot for private data, credentials, identity and authorship
    leakage, and licence consistency.
 3. **The source repository must be publicly cloneable at its pinned SHA before
-   submission**: JD flips [Hadamard-B](https://github.com/JD-Jones-ASES/Hadamard-B)
-   public at `35665af5…`, so the cited note is inspectable. The account here is
-   written to stand without it either way.
+   submission** — executed: [Hadamard-B](https://github.com/JD-Jones-ASES/Hadamard-B)
+   is public as of 2026-09-01 and the pinned commit `01a7f061…` resolves
+   without authentication. The account here stands without it either way.
 4. JD flips this repository public at the exact final commit. Palomar checks out
    that commit, and mechanical verification runs in a public GitHub Actions
    workflow, so the repository and the commit are public from the moment of
@@ -272,7 +272,7 @@ records from a Hadamard-B checkout. Before parsing, it requires their bytes to
 match the SHA-256 pins below; it then validates the record fields it depends on
 and emits `HadamardBFormal/Data/Generated.lean` deterministically.
 
-| Source at `Hadamard-B@35665af5bc97bf3811bf971e39051727fcc99d10` | SHA-256 |
+| Source at `Hadamard-B@01a7f0614208ca68d69e64a7cd5b560aadafbb8a` | SHA-256 |
 | --- | --- |
 | `data/h52-gate.json` | `ef60c4ff9f245eec5ba7f035e5968152836207fcd9235a0b1851150d2fb1d170` |
 | `data/h20-boundary.json` | `716610543b79ab9e1c9f1adb142c114544e70e58d370500130b83c17a18cf254` |
@@ -326,15 +326,15 @@ repeats those statements and connects them to the completed development under
 
 ## Sources and provenance
 
-- `Hadamard-B@35665af5bc97bf3811bf971e39051727fcc99d10`, `note/NOTE-B.md`
+- `Hadamard-B@01a7f0614208ca68d69e64a7cd5b560aadafbb8a`, `note/NOTE-B.md`
   §§1.0--1.6 and §2.2, is the source for every statement formalized here and
-  for the two pinned instance records. **That repository is private at the time
-  of writing** and is expected to be public at registration. A reader who
-  reaches this page before that flip cannot inspect the note at its pinned SHA;
-  the account given here is written to be self-contained, and nothing above
-  asks the reader to take the note's word for what is proved. Claims about the
-  source's own results — its certificates, its searches, its prior-art
-  statements — rest on the source and are marked as such.
+  for the two pinned instance records. **That repository is public as of
+  2026-09-01**, and the pinned commit resolves without authentication —
+  verified the same day. The account given here is nonetheless self-contained,
+  and nothing above asks the reader to take the note's word for what is
+  proved. Claims about the source's own results — its certificates, its
+  searches, its prior-art statements — rest on the source and are marked as
+  such.
 - The classical spine is credited in NOTE-B §4.1 from firsthand reads: the
   four-block array is Goethals--Seidel (1970); the general-abelian setting and
   the classical width-4 border are Wallis--Whiteman (1972), with Spence (1975)
